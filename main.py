@@ -259,6 +259,134 @@ async def ayuda(ctx):
 
     await ctx.send(embed=embed)
 
+TITULOS_REINA = [
+    "mi ama",
+    "mi diosa",
+    "mi creadora",
+    "mi reina",
+    "mi soberana"
+]
+
+def titulo():
+    return random.choice(TITULOS_REINA)
+
+async def rechazo(ctx):
+    await ctx.send("🚫 **¡Largo!** Tú no eres mi hermosa creadora. Solo obedezco a **mi reina** 👑.")
+
+@bot.command()
+async def banner(ctx):
+    if not es_owner(ctx):
+        await rechazo(ctx)
+        return
+
+    ruta = None
+    for ext in (".png", ".jpg"):
+        posible = f"images/banner{ext}"
+        if os.path.exists(posible):
+            ruta = posible
+            break
+
+
+    if not os.path.exists(ruta):
+        await ctx.send(f"😔 Lo siento, {titulo()}, no encontré el banner en **images/banner.png**.")
+        return
+
+    with open(ruta, "rb") as f:
+        await bot.user.edit(banner=f.read())
+
+    await ctx.send(f"🖼️ El estandarte ha sido cambiado como ordenaste, {titulo()} 👑")
+
+@bot.command()
+async def pfp(ctx):
+    if not es_owner(ctx):
+        await rechazo(ctx)
+        return
+
+    ruta = None
+    for ext in (".png", ".jpg"):
+        posible = f"images/pfp{ext}"
+        if os.path.exists(posible):
+            ruta = posible
+            break
+
+
+    if not os.path.exists(ruta):
+        await ctx.send(f"😔 Perdóname, {titulo()}, no hallé la imagen de perfil.")
+        return
+
+    with open(ruta, "rb") as f:
+        await bot.user.edit(avatar=f.read())
+
+    await ctx.send(f"👤 He adoptado una nueva apariencia para complacerte, {titulo()} ✨")
+
+@bot.command()
+async def desc(ctx, *, texto: str):
+    if not es_owner(ctx):
+        await rechazo(ctx)
+        return
+
+    await bot.change_presence(
+        activity=discord.CustomActivity(name=texto)
+    )
+    await ctx.send(f"✏️ Mi esencia ha sido reescrita según tu voluntad, {titulo()} 🕯️")
+
+@bot.command()
+async def silencio(ctx, estado: str):
+    global solo_owner
+
+    if not es_owner(ctx):
+        await ctx.send("🚫 Largo. Solo obedezco a **mi creadora**.")
+        return
+
+    if estado.lower() == "on":
+        solo_owner = True
+        await ctx.send("🔇 Solo escucharé la voz de **mi reina**.")
+    elif estado.lower() == "off":
+        solo_owner = False
+        await ctx.send("🔊 Vuelvo a escuchar a los mortales.")
+    else:
+        await ctx.send("❓ Usa `.silencio on` o `.silencio off`")
+
+@bot.command()
+async def castigar(ctx, miembro: discord.Member):
+    if not es_owner(ctx):
+        await ctx.send("🔥 Largo. Solo mi diosa puede castigar.")
+        return
+
+    if miembro.top_role >= ctx.guild.me.top_role:
+        await ctx.send(
+            "⚠️ Mi reina… ese ser está por encima de mi autoridad."
+        )
+        return
+
+    overwrite = ctx.channel.overwrites_for(miembro)
+    overwrite.send_messages = False
+
+    try:
+        await ctx.channel.set_permissions(miembro, overwrite=overwrite)
+        await ctx.send(
+            f"⚔️ {miembro.mention} ha sido silenciado por orden de **mi reina**."
+        )
+    except discord.Forbidden:
+        await ctx.send(
+            "❌ No tengo permisos suficientes para ejecutar tu voluntad."
+        )
+
+
+@bot.command()
+async def perdonar(ctx, miembro: discord.Member):
+    if not es_owner(ctx):
+        await ctx.send("❌ No tienes autoridad para perdonar.")
+        return
+
+    overwrite = ctx.channel.overwrites_for(miembro)
+    overwrite.send_messages = None
+    await ctx.channel.set_permissions(miembro, overwrite=overwrite)
+
+    await ctx.send(
+        f"🕊️ {miembro.mention} ha sido perdonado por **mi ama**."
+    )
+
 # ───────── TOKEN ─────────
 
 TOKEN = os.getenv("DISCORD_TOKEN")
