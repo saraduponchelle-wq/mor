@@ -411,7 +411,7 @@ async def embed(ctx):
     embed.add_field(
         name="💰 ¿Cómo participar?",
         value=(
-            "Consigue **2000 monedas** usando el nuevo bot de economía.\n"
+            "Consigue **2500 monedas** usando el nuevo bot de economía.\n"
             "Las monedas se obtienen **hablando en los chats del servidor**.\n"
             "*No cuentan los chats de bots.*\n"
         ),
