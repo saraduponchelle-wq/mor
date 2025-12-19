@@ -14,7 +14,7 @@ intents.members = True
 
 OWNER_ID = 903114752060977202
 NOMBRE_ROL = "Ruleta"
-NOMBRE_CANAL_RULETA = "𝚁𝚞𝚕𝚎𝚝𝚊"
+NOMBRE_CANAL_RULETA = "﹕₊˚ʚ🎲ɞ・𝚁𝚞𝚕𝚎𝚝𝚊"
 CANAL_NOTICIAS_ID = 1448855806232494130
 
 EMOJI_RANDOM = "<a:random:1451014515473911828>"
@@ -386,6 +386,63 @@ async def perdonar(ctx, miembro: discord.Member):
     await ctx.send(
         f"🕊️ {miembro.mention} ha sido perdonado por **mi ama**."
     )
+
+@bot.command()
+async def embed(ctx):
+    embed = discord.Embed(
+        title="🎄 ¡Evento Navideño Iniciado! 🎄",
+        description=(
+            "La magia de la Navidad llega al servidor ✨\n"
+            "Da inicio nuestra **gran rifa navideña**, auspiciada por **Mor**."
+        ),
+        color=discord.Color.red()
+    )
+
+    embed.add_field(
+        name="🎁 Premios de la rifa",
+        value=(
+            "🥇 **Primer lugar:** 1 mes de Discord Nitro + rol especial exclusivo\n"
+            "🥈 **Segundo lugar:** Marco de la tienda + rol especial\n"
+            "🥉 **Tercer lugar:** Rol especial"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="💰 ¿Cómo participar?",
+        value=(
+            "Consigue **2000 monedas** usando el nuevo bot de economía.\n"
+            "Las monedas se obtienen **hablando en los chats del servidor**.\n"
+            "*No cuentan los chats de bots.*"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="🛒 Compra del ticket",
+        value="Compra el ticket usando el comando:\n`/item store`",
+        inline=False
+    )
+
+    embed.add_field(
+        name="🎯 Monedas extra",
+        value=(
+            "• Retos especiales los fines de semana\n"
+            "• Pequeños juegos que otorgan monedas"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="📅 Fecha del sorteo",
+        value="🗓️ **Martes 23 en la mañana**",
+        inline=False
+    )
+
+    embed.set_footer(text="🎅 Evento navideño • Auspiciado por Mor")
+
+    await ctx.send(embed=embed)
+
 
 # ───────── TOKEN ─────────
 
