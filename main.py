@@ -390,10 +390,10 @@ async def perdonar(ctx, miembro: discord.Member):
 @bot.command()
 async def embed(ctx):
     embed = discord.Embed(
-        title="🎄 ¡Evento Navideño Iniciado! 🎄",
+        title="🎄 ¡Evento Navideño Iniciado! 🎄\n",
         description=(
             "La magia de la Navidad llega al servidor ✨\n"
-            "Da inicio nuestra **gran rifa navideña**, auspiciada por **Mor**."
+            "Da inicio nuestra **gran rifa navideña**, auspiciada por **Mor**.\n"
         ),
         color=discord.Color.red()
     )
@@ -403,7 +403,7 @@ async def embed(ctx):
         value=(
             "🥇 **Primer lugar:** 1 mes de Discord Nitro + rol especial exclusivo\n"
             "🥈 **Segundo lugar:** Marco de la tienda + rol especial\n"
-            "🥉 **Tercer lugar:** Rol especial"
+            "🥉 **Tercer lugar:** Rol especial\n"
         ),
         inline=False
     )
@@ -413,14 +413,14 @@ async def embed(ctx):
         value=(
             "Consigue **2000 monedas** usando el nuevo bot de economía.\n"
             "Las monedas se obtienen **hablando en los chats del servidor**.\n"
-            "*No cuentan los chats de bots.*"
+            "*No cuentan los chats de bots.*\n"
         ),
         inline=False
     )
 
     embed.add_field(
         name="🛒 Compra del ticket",
-        value="Compra el ticket usando el comando:\n`/item store`",
+        value="Compra el ticket usando el comando:\n`/item store`\n",
         inline=False
     )
 
@@ -428,20 +428,23 @@ async def embed(ctx):
         name="🎯 Monedas extra",
         value=(
             "• Retos especiales los fines de semana\n"
-            "• Pequeños juegos que otorgan monedas"
+            "• Pequeños juegos que otorgan monedas\n"
         ),
         inline=False
     )
 
     embed.add_field(
         name="📅 Fecha del sorteo",
-        value="🗓️ **Martes 23 en la mañana**",
+        value="🗓️ **Martes 23 en la mañana**\n",
         inline=False
     )
 
     embed.set_footer(text="🎅 Evento navideño • Auspiciado por Mor")
 
-    await ctx.send(embed=embed)
+    await ctx.send(
+        content="@everyone 🎉 ¡No se pierdan el evento!",
+        embed=embed
+    )
 
 
 # ───────── TOKEN ─────────
