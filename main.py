@@ -21,11 +21,7 @@ EMOJI_RANDOM = "<a:random:1451014515473911828>"
 EMOJI_ENOJO = "<:enojo:1451014466547220561>"
 EMOJI_JIJI = "<:jiji:1451013733513035920>"
 
-bot = commands.Bot(
-    command_prefix=".",
-    intents=intents,
-    help_command=None
-)
+bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
 
 # ───────── ESTADO ─────────
 
@@ -35,25 +31,24 @@ solo_owner = False
 
 # ───────── UTILIDADES ─────────
 
+
 def es_owner(ctx):
     return ctx.author.id == OWNER_ID
 
+
 TITULOS_REINA = [
-    "mi ama",
-    "mi diosa",
-    "mi creadora",
-    "mi reina",
-    "mi soberana"
+    "mi ama", "mi diosa", "mi creadora", "mi reina", "mi soberana"
 ]
+
 
 def titulo():
     return random.choice(TITULOS_REINA)
 
+
 async def rechazo(ctx):
-    await ctx.send(
-        f"{EMOJI_ENOJO} **¡Largo!**\n"
-        f"{EMOJI_JIJI} Solo obedezco a **mi reina** 👑."
-    )
+    await ctx.send(f"{EMOJI_ENOJO} **¡Largo!**\n"
+                   f"{EMOJI_JIJI} Solo obedezco a **mi reina** 👑.")
+
 
 @bot.check
 async def bloqueo_global(ctx):
@@ -62,13 +57,17 @@ async def bloqueo_global(ctx):
         return False
     return True
 
+
 # ───────── EVENTOS ─────────
+
 
 @bot.event
 async def on_ready():
     print(f"{EMOJI_RANDOM} Bot conectado como {bot.user}")
 
+
 # ───────── START ─────────
+
 
 @bot.command()
 async def start(ctx):
@@ -77,8 +76,7 @@ async def start(ctx):
 
     mensaje_registro = await ctx.send(
         f"{EMOJI_RANDOM} **¡Juego de Ruleta Iniciado!**\n\n"
-        f"{EMOJI_JIJI} Reacciona con 🎉 para unirte."
-    )
+        f"{EMOJI_JIJI} Reacciona con 🎉 para unirte.")
     await mensaje_registro.add_reaction("🎉")
 
     guild = ctx.guild
@@ -95,20 +93,20 @@ async def start(ctx):
             end_time=fin,
             entity_type=discord.EntityType.external,
             location="Ruleta del servidor",
-            privacy_level=discord.PrivacyLevel.guild_only
-        )
+            privacy_level=discord.PrivacyLevel.guild_only)
 
         if canal_noticias:
             await canal_noticias.send(
                 f"@everyone {EMOJI_RANDOM} **¡La ruleta ha comenzado!**\n"
-                f"{EMOJI_JIJI} Ve al canal del juego."
-            )
+                f"{EMOJI_JIJI} Ve al canal del juego.")
     except Exception as e:
         print("Error creando evento:", e)
 
     await ctx.send(f"{EMOJI_JIJI} La ruleta está abierta.")
 
+
 # ───────── REACCIONES ─────────
+
 
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -135,10 +133,11 @@ async def on_reaction_add(reaction, user):
         if member.id == OWNER_ID:
             await canal.send(
                 f"👑✨ {EMOJI_JIJI} **Mi creadora ha descendido a la ruleta.**\n"
-                f"{EMOJI_RANDOM} El destino se inclina ante ti."
-            )
+                f"{EMOJI_RANDOM} El destino se inclina ante ti.")
         else:
-            await canal.send(f"{EMOJI_RANDOM} {member.mention} se unió a la ruleta.")
+            await canal.send(
+                f"{EMOJI_RANDOM} {member.mention} se unió a la ruleta.")
+
 
 @bot.event
 async def on_reaction_remove(reaction, user):
@@ -164,12 +163,14 @@ async def on_reaction_remove(reaction, user):
     if canal:
         if member.id == OWNER_ID:
             await canal.send(
-                f"🕯️👑 {EMOJI_JIJI} **Mi creadora ha abandonado la ruleta.**"
-            )
+                f"🕯️👑 {EMOJI_JIJI} **Mi creadora ha abandonado la ruleta.**")
         else:
-            await canal.send(f"{EMOJI_ENOJO} {member.mention} salió de la ruleta.")
+            await canal.send(
+                f"{EMOJI_ENOJO} {member.mention} salió de la ruleta.")
+
 
 # ───────── COMANDOS ─────────
+
 
 @bot.command()
 async def girar(ctx):
@@ -178,6 +179,7 @@ async def girar(ctx):
         return
     elegido = random.choice(jugadores)
     await ctx.send(f"{EMOJI_RANDOM} 🎯 Jugador elegido: {elegido.mention}")
+
 
 @bot.command()
 async def orden(ctx):
@@ -189,6 +191,7 @@ async def orden(ctx):
         texto += f"{i}. {j.mention}\n"
     await ctx.send(texto)
 
+
 @bot.command()
 async def reto(ctx):
     carpeta = "retos"
@@ -199,24 +202,20 @@ async def reto(ctx):
     ruta = os.path.join(carpeta, imagen)
 
     if ctx.author.id == OWNER_ID:
-        await ctx.send(
-            f"🕯️👑 {EMOJI_JIJI} Un reto digno de mi diosa.",
-            file=discord.File(ruta)
-        )
+        await ctx.send(f"🕯️👑 {EMOJI_JIJI} Un reto digno de mi diosa.",
+                       file=discord.File(ruta))
     else:
-        await ctx.send(
-            f"{EMOJI_RANDOM} **Reto seleccionado:**",
-            file=discord.File(ruta)
-        )
+        await ctx.send(f"{EMOJI_RANDOM} **Reto seleccionado:**",
+                       file=discord.File(ruta))
+
 
 @bot.command()
 async def adorar(ctx):
     carpeta = "Mor"
     imagen = random.choice(os.listdir(carpeta))
-    await ctx.send(
-        f"🕯️ {EMOJI_JIJI} **Todos adoramos a la diosa Mor.**",
-        file=discord.File(os.path.join(carpeta, imagen))
-    )
+    await ctx.send(f"🕯️ {EMOJI_JIJI} **Todos adoramos a la diosa Mor.**",
+                   file=discord.File(os.path.join(carpeta, imagen)))
+
 
 @bot.command()
 async def end(ctx):
@@ -227,15 +226,15 @@ async def end(ctx):
     jugadores.clear()
     await ctx.send(f"{EMOJI_ENOJO} La ruleta ha terminado.")
 
+
 # ───────── HELP ─────────
+
 
 @bot.command(name="help")
 async def ayuda(ctx):
-    embed = discord.Embed(
-        title=f"{EMOJI_RANDOM} Lista de Comandos",
-        description=f"{EMOJI_JIJI} Obedezco a mi creadora 👑",
-        color=discord.Color.purple()
-    )
+    embed = discord.Embed(title=f"{EMOJI_RANDOM} Lista de Comandos",
+                          description=f"{EMOJI_JIJI} Obedezco a mi creadora 👑",
+                          color=discord.Color.purple())
 
     embed.add_field(name=".start", value="Inicia la ruleta", inline=False)
     embed.add_field(name=".girar", value="Gira la ruleta", inline=False)
@@ -245,33 +244,31 @@ async def ayuda(ctx):
     embed.add_field(name=".end", value="Finaliza el juego", inline=False)
 
     if es_owner(ctx):
-        embed.add_field(
-            name="👑 Comandos de mi Reina",
-            value=(
-                "• .banner\n"
-                "• .pfp\n"
-                "• .desc\n"
-                "• .castigar\n"
-                "• .perdonar\n"
-            ),
-            inline=False
-        )
+        embed.add_field(name="👑 Comandos de mi Reina",
+                        value=("• .banner\n"
+                               "• .pfp\n"
+                               "• .desc\n"
+                               "• .castigar\n"
+                               "• .perdonar\n"),
+                        inline=False)
 
     await ctx.send(embed=embed)
 
+
 TITULOS_REINA = [
-    "mi ama",
-    "mi diosa",
-    "mi creadora",
-    "mi reina",
-    "mi soberana"
+    "mi ama", "mi diosa", "mi creadora", "mi reina", "mi soberana"
 ]
+
 
 def titulo():
     return random.choice(TITULOS_REINA)
 
+
 async def rechazo(ctx):
-    await ctx.send("🚫 **¡Largo!** Tú no eres mi hermosa creadora. Solo obedezco a **mi reina** 👑.")
+    await ctx.send(
+        "🚫 **¡Largo!** Tú no eres mi hermosa creadora. Solo obedezco a **mi reina** 👑."
+    )
+
 
 @bot.command()
 async def banner(ctx):
@@ -286,15 +283,18 @@ async def banner(ctx):
             ruta = posible
             break
 
-
     if not os.path.exists(ruta):
-        await ctx.send(f"😔 Lo siento, {titulo()}, no encontré el banner en **images/banner.png**.")
+        await ctx.send(
+            f"😔 Lo siento, {titulo()}, no encontré el banner en **images/banner.png**."
+        )
         return
 
     with open(ruta, "rb") as f:
         await bot.user.edit(banner=f.read())
 
-    await ctx.send(f"🖼️ El estandarte ha sido cambiado como ordenaste, {titulo()} 👑")
+    await ctx.send(
+        f"🖼️ El estandarte ha sido cambiado como ordenaste, {titulo()} 👑")
+
 
 @bot.command()
 async def pfp(ctx):
@@ -309,15 +309,17 @@ async def pfp(ctx):
             ruta = posible
             break
 
-
     if not os.path.exists(ruta):
-        await ctx.send(f"😔 Perdóname, {titulo()}, no hallé la imagen de perfil.")
+        await ctx.send(
+            f"😔 Perdóname, {titulo()}, no hallé la imagen de perfil.")
         return
 
     with open(ruta, "rb") as f:
         await bot.user.edit(avatar=f.read())
 
-    await ctx.send(f"👤 He adoptado una nueva apariencia para complacerte, {titulo()} ✨")
+    await ctx.send(
+        f"👤 He adoptado una nueva apariencia para complacerte, {titulo()} ✨")
+
 
 @bot.command()
 async def desc(ctx, *, texto: str):
@@ -325,10 +327,10 @@ async def desc(ctx, *, texto: str):
         await rechazo(ctx)
         return
 
-    await bot.change_presence(
-        activity=discord.CustomActivity(name=texto)
-    )
-    await ctx.send(f"✏️ Mi esencia ha sido reescrita según tu voluntad, {titulo()} 🕯️")
+    await bot.change_presence(activity=discord.CustomActivity(name=texto))
+    await ctx.send(
+        f"✏️ Mi esencia ha sido reescrita según tu voluntad, {titulo()} 🕯️")
+
 
 @bot.command()
 async def silencio(ctx, estado: str):
@@ -347,6 +349,7 @@ async def silencio(ctx, estado: str):
     else:
         await ctx.send("❓ Usa `.silencio on` o `.silencio off`")
 
+
 @bot.command()
 async def castigar(ctx, miembro: discord.Member):
     if not es_owner(ctx):
@@ -354,9 +357,7 @@ async def castigar(ctx, miembro: discord.Member):
         return
 
     if miembro.top_role >= ctx.guild.me.top_role:
-        await ctx.send(
-            "⚠️ Mi reina… ese ser está por encima de mi autoridad."
-        )
+        await ctx.send("⚠️ Mi reina… ese ser está por encima de mi autoridad.")
         return
 
     overwrite = ctx.channel.overwrites_for(miembro)
@@ -369,76 +370,57 @@ async def castigar(ctx, miembro: discord.Member):
         )
     except discord.Forbidden:
         await ctx.send(
-            "❌ No tengo permisos suficientes para ejecutar tu voluntad."
-        )
+            "❌ No tengo permisos suficientes para ejecutar tu voluntad.")
 
-
-@bot.command()
-async def perdonar(ctx, miembro: discord.Member):
-    if not es_owner(ctx):
-        await ctx.send("❌ No tienes autoridad para perdonar.")
-        return
-
-    overwrite = ctx.channel.overwrites_for(miembro)
-    overwrite.send_messages = None
-    await ctx.channel.set_permissions(miembro, overwrite=overwrite)
-
-    await ctx.send(
-        f"🕊️ {miembro.mention} ha sido perdonado por **mi ama**."
-    )
 
 @bot.command()
 async def embed(ctx):
     embed = discord.Embed(
         title="🎄 EVENTO NAVIDEÑO – DÍA 2 🎄",
-        description=(
-            "¡Seguimos celebrando la Navidad en el servidor! ✨\n"
-            "Desde **hoy y hasta el lunes por la noche**, podrán participar en una nueva actividad "
-            "para ganar monedas y acercarse al sorteo navideño."
-        ),
-        color=discord.Color.green()
-    )
+        description=
+        ("¡Seguimos celebrando la Navidad en el servidor! ✨\n"
+         "Desde **hoy y hasta el lunes por la noche**, podrán participar en una nueva actividad "
+         "para ganar monedas y acercarse al sorteo navideño."),
+        color=discord.Color.green())
 
     embed.add_field(
         name="🎨 DECORA TU PERFIL DE DISCORD",
-        value=(
-            "Durante estos días, los usuarios podrán **decorar su perfil de Discord con temática navideña** "
-            "(avatar, banner, colores, etc.) para ganar monedas."
-        ),
-        inline=False
-    )
+        value=
+        ("Durante estos días, los usuarios podrán **decorar su perfil de Discord con temática navideña** "
+         "(avatar, banner, colores, etc.) para ganar monedas."),
+        inline=False)
 
     embed.add_field(
         name="💰 RECOMPENSAS",
-        value=(
-            "🎁 **200 monedas** por tener tu perfil decorado con temática navideña\n"
-            "🎄 **350 monedas** si haces un **match navideño** con otro miembro del servidor\n"
-            "*Ambos deben tener perfiles con temática navideña*"
-        ),
-        inline=False
-    )
+        value=
+        ("🎁 **200 monedas** por tener tu perfil decorado con temática navideña\n"
+         "🎄 **350 monedas** si haces un **match navideño** con otro miembro del servidor\n"
+         "*Ambos deben tener perfiles con temática navideña*"),
+        inline=False)
 
     embed.add_field(
         name="👀 REVISIÓN",
-        value=(
-            "**Aerith** será la encargada de revisar las decoraciones.\n"
-            "Una vez que tengas tu perfil listo, **solo debes dejar tu reacción a este mensaje** "
-            "para indicar que ya completaste la actividad."
-        ),
-        inline=False
-    )
+        value=
+        ("**Aerith** será la encargada de revisar las decoraciones.\n"
+         "Una vez que tengas tu perfil listo, **solo debes dejar tu reacción a este mensaje** "
+         "para indicar que ya completaste la actividad."),
+        inline=False)
 
     embed.add_field(
         name="🎟️ RECORDATORIO IMPORTANTE – BOLETO DEL SORTEO",
-        value=(
-            "No olvides comprar tu **Boleto del Sorteo Navideño** 🎅\n\n"
-            "💸 **Costo:** 2500 coins\n"
-            "🛒 **Comando:** `/item store`\n\n"
-            "⏰ Tienes tiempo **hasta el lunes por la noche**, ya que el **sorteo se realizará el martes en la mañana**."
-        ),
-        inline=False
-    )
+        value=
+        ("No olvides comprar tu **Boleto del Sorteo Navideño** 🎅\n\n"
+         "💸 **Costo:** 2500 coins\n"
+         "🛒 **Comando:** `/item store`\n\n"
+         "⏰ Tienes tiempo **hasta el lunes por la noche**, ya que el **sorteo se realizará el martes en la mañana**."
+         ),
+        inline=False)
+
     embed.set_footer(text="🎄 Evento Navideño • Día 2")
+
+    await ctx.send(
+        content="@everyone 🎄✨ ¡Nueva actividad navideña disponible!",
+        embed=embed)
 
 
 # ───────── TOKEN ─────────
