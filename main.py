@@ -376,52 +376,64 @@ async def castigar(ctx, miembro: discord.Member):
 @bot.command()
 async def embed(ctx):
     embed = discord.Embed(
-        title="🎄 EVENTO NAVIDEÑO – DÍA 2 🎄",
-        description=
-        ("¡Seguimos celebrando la Navidad en el servidor! ✨\n"
-         "Desde **hoy y hasta el lunes por la noche**, podrán participar en una nueva actividad "
-         "para ganar monedas y acercarse al sorteo navideño."),
-        color=discord.Color.green())
+        title="🎄 EVENTO NAVIDEÑO – RETO DEL DÍA 2 🎄",
+        description=(
+            "¡Seguimos con los retos navideños del servidor! ✨\n"
+            "El **reto del día 2** ya está disponible y es una gran oportunidad "
+            "para seguir acumulando monedas."
+        ),
+        color=discord.Color.red()
+    )
 
     embed.add_field(
-        name="🎨 DECORA TU PERFIL DE DISCORD",
-        value=
-        ("Durante estos días, los usuarios podrán **decorar su perfil de Discord con temática navideña** "
-         "(avatar, banner, colores, etc.) para ganar monedas."),
-        inline=False)
+        name="📝 RETO DEL DÍA 2 – FICHA DE ROL NAVIDEÑA",
+        value=(
+            "Crea una **ficha de rol en el canal de Fichas**, la cual debe estar "
+            "**tematizada con motivos navideños** 🎅🎄."
+        ),
+        inline=False
+    )
 
     embed.add_field(
-        name="💰 RECOMPENSAS",
-        value=
-        ("🎁 **200 monedas** por tener tu perfil decorado con temática navideña\n"
-         "🎄 **350 monedas** si haces un **match navideño** con otro miembro del servidor\n"
-         "*Ambos deben tener perfiles con temática navideña*"),
-        inline=False)
+        name="💰 RECOMPENSA",
+        value="🎁 **500 monedas** para todos los usuarios que completen correctamente el reto.",
+        inline=False
+    )
 
     embed.add_field(
-        name="👀 REVISIÓN",
-        value=
-        ("**Aerith** será la encargada de revisar las decoraciones.\n"
-         "Una vez que tengas tu perfil listo, **solo debes dejar tu reacción a este mensaje** "
-         "para indicar que ya completaste la actividad."),
-        inline=False)
+        name="👀 ¿CÓMO VALIDARLO?",
+        value=(
+            "Una vez que tengas tu ficha lista y publicada en el canal correspondiente, "
+            "**solo debes reaccionar a este mensaje** para indicar que ya completaste el reto.\n"
+            "El staff revisará las fichas y entregará las monedas a quienes cumplan con la temática."
+        ),
+        inline=False
+    )
 
     embed.add_field(
-        name="🎟️ RECORDATORIO IMPORTANTE – BOLETO DEL SORTEO",
-        value=
-        ("No olvides comprar tu **Boleto del Sorteo Navideño** 🎅\n\n"
-         "💸 **Costo:** 2500 coins\n"
-         "🛒 **Comando:** `/item store`\n\n"
-         "⏰ Tienes tiempo **hasta el lunes por la noche**, ya que el **sorteo se realizará el martes en la mañana**."
-         ),
-        inline=False)
+        name="⏳ RECORDATORIOS IMPORTANTES",
+        value=(
+            "✨ El **reto del día 1** aún se puede completar.\n\n"
+            "🎟️ El **sorteo navideño se realizará este martes 23 en la mañana**, "
+            "por lo que deben **comprar su cupón antes de que termine el lunes**.\n"
+            "🛒 **Comando:** `/item store`"
+        ),
+        inline=False
+    )
 
-    embed.set_footer(text="🎄 Evento Navideño • Día 2")
+    embed.add_field(
+        name="🎁 PREMIOS DEL SORTEO NAVIDEÑO",
+        value=(
+            "🥇 **Primer lugar:** 1 mes de Discord Nitro + rol especial exclusivo\n"
+            "🥈 **Segundo lugar:** Marco de la tienda + rol especial\n"
+            "🥉 **Tercer lugar:** Rol especial"
+        ),
+        inline=False
+    )
 
-    await ctx.send(
-        content="@everyone 🎄✨ ¡Nueva actividad navideña disponible!",
-        embed=embed)
+    embed.set_footer(text="🎄 Evento Navideño • Reto del Día 2")
 
+    await ctx.send(content='@everyone', embed=embed)
 
 # ───────── TOKEN ─────────
 
