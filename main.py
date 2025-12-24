@@ -4,7 +4,10 @@ from datetime import timedelta
 from menus.comida import enviar_menu_comida
 from menus.bar import enviar_menu_bar
 import random
-import os
+import sys, os
+from menus.comida import enviar_menu_comida
+
+
 
 # ───────── CONFIGURACIÓN ─────────
 
@@ -440,7 +443,6 @@ async def embed(ctx):
 @bot.command()
 async def menucomida(ctx):
     await enviar_menu_comida(ctx)
-
 
 @bot.command()
 async def menubar(ctx):
