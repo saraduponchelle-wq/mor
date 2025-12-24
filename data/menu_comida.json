@@ -2,11 +2,13 @@
   "hamburguesa": {
     "nombre": "Hamburguesa",
     "precio": 350,
-    "emoji": "🍔"
+    "emoji": "🍔",
+    "descripcion": "Hamburguesa clásica con queso y papas"
   },
   "pizza": {
     "nombre": "Pizza",
     "precio": 400,
-    "emoji": "🍕"
+    "emoji": "🍕",
+    "descripcion": "Pizza artesanal con extra queso"
   }
 }
