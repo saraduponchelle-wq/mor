@@ -442,7 +442,11 @@ async def embed(ctx):
 
 @bot.command()
 async def menucomida(ctx):
-    await enviar_menu_comida(ctx)
+    try:
+        await enviar_menu_comida(ctx)
+    except Exception as e:
+        await ctx.send("❌ Error al abrir el menú.")
+        print("ERROR menucomida:", e)
 
 @bot.command()
 async def menubar(ctx):
