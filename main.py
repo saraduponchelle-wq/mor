@@ -437,10 +437,12 @@ async def embed(ctx):
 
 # ───────── TOKEN ─────────
 
-TOKEN = os.getenv("DISCORD_TOKEN")
 @bot.event
 async def setup_hook():
     await bot.load_extension("cogs.menu_bar")
     await bot.load_extension("cogs.menu_comida")
 
+# ───────── TOKEN ─────────
+
+TOKEN = os.getenv("DISCORD_TOKEN")
 bot.run(TOKEN)
