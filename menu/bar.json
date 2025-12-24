@@ -1,0 +1,12 @@
+{
+  "whisky": {
+    "nombre": "Whisky",
+    "precio": 500,
+    "emoji": "🥃"
+  },
+  "vino": {
+    "nombre": "Vino",
+    "precio": 300,
+    "emoji": "🍷"
+  }
+}

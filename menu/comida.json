@@ -1,0 +1,12 @@
+{
+  "hamburguesa": {
+    "nombre": "Hamburguesa",
+    "precio": 350,
+    "emoji": "🍔"
+  },
+  "pizza": {
+    "nombre": "Pizza",
+    "precio": 400,
+    "emoji": "🍕"
+  }
+}
