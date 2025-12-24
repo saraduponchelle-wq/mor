@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from datetime import timedelta
+from menus.comida import enviar_menu_comida
+from menus.bar import enviar_menu_bar
 import random
 import os
 
@@ -435,12 +437,15 @@ async def embed(ctx):
 
     await ctx.send(content='@everyone', embed=embed)
 
-# ───────── TOKEN ─────────
+@bot.command()
+async def menucomida(ctx):
+    await enviar_menu_comida(ctx)
 
-@bot.event
-async def setup_hook():
-    await bot.load_extension("cogs.menu_bar")
-    await bot.load_extension("cogs.menu_comida")
+
+@bot.command()
+async def menubar(ctx):
+    await enviar_menu_bar(ctx)
+
 
 # ───────── TOKEN ─────────
 
