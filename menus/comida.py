@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import json
 
-MENU_FILE = "menus/comida.json"
+MENU_FILE = "menu/menu_comida.json"
 MESERO_ROLE_NAME = "Meser@"
 COLOR = discord.Color.orange()
 TITULO = "🍔 Menú de Comida"
