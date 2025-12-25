@@ -1,7 +1,7 @@
 import discord
 import json
 
-RUTA_MENU_COMIDA = "menus/comida.json"
+RUTA_MENU_COMIDA = "data/menu_comida.json"
 ROL_MESERO = "Mesero"
 
 
