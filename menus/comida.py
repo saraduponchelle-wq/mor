@@ -31,8 +31,9 @@ class NotaModal(discord.ui.Modal, title="📝 Nota del pedido"):
 
 class ProductoButton(discord.ui.Button):
     def __init__(self, item, puede_pagar, view):
+        label = f"{item['nombre']} — {item['precio']}"
         super().__init__(
-            label=f'{item["nombre"]} — {item["precio"]}',
+            label=label,
             style=discord.ButtonStyle.success if puede_pagar else discord.ButtonStyle.secondary,
             disabled=not puede_pagar
         )
@@ -50,14 +51,17 @@ class ProductoButton(discord.ui.Button):
         guild = interaction.guild
         rol_mesero = discord.utils.get(guild.roles, name=ROL_MESERO)
 
+        nombre = self.item["nombre"]
+        precio = self.item["precio"]
+
         texto = (
-            f"🍽️ **NUEVO PEDIDO**\n\n"
+            "🍽️ **NUEVO PEDIDO**\n\n"
             f"👤 Usuario: {interaction.user.mention}\n"
-            f"📦 Producto: **{self.item['nombre']}**\n"
-            f"💰 Precio: **{self.item['precio']} monedas**\n"
+            f"📦 Producto: **{nombre}**\n"
+            f"💰 Precio: **{precio} monedas**\n"
             f"📝 Nota: {self.menu_view.nota}\n\n"
-            f"💳 **Comando para pagar:**\n"
-            f"`/item buy {self.item['nombre']}`"
+            "💳 **Comando para pagar:**\n"
+            f"`/item buy {nombre}`"
         )
 
         await interaction.response.send_message(
@@ -140,7 +144,7 @@ class MenuComidaView(discord.ui.View):
         self.add_item(CancelarButton(self))
 
 
-# ───────── FUNCIÓN PÚBLICA (SE LLAMA DESDE MAIN) ─────────
+# ───────── FUNCIÓN PÚBLICA (LLAMADA DESDE MAIN) ─────────
 
 async def mostrar_menu_comida(ctx, balance=None):
     with open(RUTA_MENU_COMIDA, encoding="utf-8") as f:
@@ -169,11 +173,15 @@ async def mostrar_menu_comida(ctx, balance=None):
     )
 
     for item in menu.values():
+        nombre = item["nombre"]
+        descripcion = item["descripcion"]
+        precio = item["precio"]
+
         embed.add_field(
-            name=item["nombre"],
+            name=nombre,
             value=(
-                f'{item["descripcion"]}\n'
-                f'💰 **{item["precio']} monedas**'
+                f"{descripcion}\n"
+                f"💰 **{precio} monedas**"
             ),
             inline=False
         )
