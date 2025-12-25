@@ -1,11 +1,11 @@
 import discord
 from discord.ext import commands
 from datetime import timedelta
-from menus.comida import enviar_menu_comida
 from menus.bar import enviar_menu_bar
+from menus.comida import mostrar_menu_comida
 import random
 import sys, os
-from menus.comida import enviar_menu_comida
+
 
 
 
@@ -440,9 +440,11 @@ async def embed(ctx):
 
     await ctx.send(content='@everyone', embed=embed)
 
+
 @bot.command()
-async def menucomida(ctx, monedas: int = None):
-    await enviar_menu_comida(ctx, monedas)
+async def menucomida(ctx, balance: int = None):
+    await mostrar_menu_comida(ctx, balance)
+
 
 @bot.command()
 async def menubar(ctx):

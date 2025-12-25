@@ -1,98 +1,182 @@
 import discord
-from discord.ext import commands
 import json
 
-MENU_FILE = "data/menu_comida.json"
-MESERO_ROLE_NAME = "Meser@"
+RUTA_MENU_COMIDA = "menus/comida.json"
+ROL_MESERO = "Mesero"
 
 
-# ---------- VIEW ----------
-class MenuComidaView(discord.ui.View):
-    def __init__(self, author_id: int, monedas: int | None, menu: dict):
-        super().__init__(timeout=180)
-        self.author_id = author_id
+# ───────── MODAL NOTA ─────────
 
-        for p in menu.values():
-            puede_comprar = True
-            if monedas is not None and p["precio"] > monedas:
-                puede_comprar = False
+class NotaModal(discord.ui.Modal, title="📝 Nota del pedido"):
+    nota = discord.ui.TextInput(
+        label="Nota",
+        placeholder="Ej: Sin cebolla, poco hielo, para llevar...",
+        required=False,
+        max_length=200
+    )
 
-            self.add_item(ComprarButton(author_id, p, puede_comprar))
+    def __init__(self, view):
+        super().__init__()
+        self.view_menu = view
 
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.author_id:
-            await interaction.response.send_message(
-                "❌ Este menú no es tuyo.",
-                ephemeral=True
-            )
-            return False
-        return True
-
-
-# ---------- BOTÓN ----------
-class ComprarButton(discord.ui.Button):
-    def __init__(self, author_id: int, producto: dict, puede_comprar: bool):
-        super().__init__(
-            label=f"{producto['nombre']} — {producto['precio']}",
-            emoji=producto.get("emoji", "🛒"),
-            style=discord.ButtonStyle.success if puede_comprar else discord.ButtonStyle.secondary,
-            disabled=not puede_comprar
-        )
-        self.producto = producto
-
-    async def callback(self, interaction: discord.Interaction):
-        p = self.producto
-
-        rol = discord.utils.get(interaction.guild.roles, name=MESERO_ROLE_NAME)
-
-        mensaje = (
-            f"🍔 **Nuevo pedido**\n"
-            f"👤 Usuario: {interaction.user.mention}\n"
-            f"📦 Producto: {p['emoji']} {p['nombre']}\n"
-            f"💰 Precio: {p['precio']} monedas\n\n"
-            f"👉 **Cobrar con:**\n"
-            f"`/item buy {p['nombre']}`"
-        )
-
-        if rol:
-            mensaje += f"\n{rol.mention}"
-
-        await interaction.channel.send(mensaje)
+    async def on_submit(self, interaction: discord.Interaction):
+        self.view_menu.nota = self.nota.value or "Sin nota."
         await interaction.response.send_message(
-            "✅ Pedido enviado a los meseros.",
+            "✅ Nota añadida correctamente.",
             ephemeral=True
         )
 
 
-# ---------- FUNCIÓN PÚBLICA ----------
-async def enviar_menu_comida(ctx: commands.Context, monedas: int | None = None):
-    try:
-        with open(MENU_FILE, encoding="utf-8") as f:
-            menu = json.load(f)
+# ───────── BOTONES ─────────
 
-        descripcion = (
-            "Haz click en un producto para pedirlo.\n"
-            "El pago se realiza con `/item buy`."
+class ProductoButton(discord.ui.Button):
+    def __init__(self, item, puede_pagar, view):
+        super().__init__(
+            label=f'{item["nombre"]} — {item["precio"]}',
+            style=discord.ButtonStyle.success if puede_pagar else discord.ButtonStyle.secondary,
+            disabled=not puede_pagar
+        )
+        self.item = item
+        self.menu_view = view
+
+    async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.menu_view.usuario.id:
+            await interaction.response.send_message(
+                "❌ Este menú no es tuyo.",
+                ephemeral=True
+            )
+            return
+
+        guild = interaction.guild
+        rol_mesero = discord.utils.get(guild.roles, name=ROL_MESERO)
+
+        texto = (
+            f"🍽️ **NUEVO PEDIDO**\n\n"
+            f"👤 Usuario: {interaction.user.mention}\n"
+            f"📦 Producto: **{self.item['nombre']}**\n"
+            f"💰 Precio: **{self.item['precio']} monedas**\n"
+            f"📝 Nota: {self.menu_view.nota}\n\n"
+            f"💳 **Comando para pagar:**\n"
+            f"`/item buy {self.item['nombre']}`"
         )
 
-        if monedas is not None:
-            descripcion += f"\n\n💰 **Tus monedas:** {monedas}"
-
-        embed = discord.Embed(
-            title="🍔 Menú de Comida",
-            description=descripcion,
-            color=discord.Color.orange()
+        await interaction.response.send_message(
+            texto,
+            allowed_mentions=discord.AllowedMentions(roles=True, users=True)
         )
 
-        for p in menu.values():
-            embed.add_field(
-                name=f"{p['emoji']} {p['nombre']}",
-                value=f"{p['descripcion']}\n💰 **{p['precio']} monedas**",
-                inline=False
+        if rol_mesero:
+            await interaction.followup.send(
+                rol_mesero.mention,
+                allowed_mentions=discord.AllowedMentions(roles=True)
             )
 
-        view = MenuComidaView(ctx.author.id, monedas, menu)
-        await ctx.send(embed=embed, view=view)
+        self.menu_view.stop()
 
-    except Exception as e:
-        await ctx.send(f"❌ Error al abrir el menú:\n```{e}```")
+
+class NotaButton(discord.ui.Button):
+    def __init__(self, view):
+        super().__init__(
+            label="📝 Añadir nota",
+            style=discord.ButtonStyle.primary
+        )
+        self.menu_view = view
+
+    async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.menu_view.usuario.id:
+            await interaction.response.send_message(
+                "❌ Este menú no es tuyo.",
+                ephemeral=True
+            )
+            return
+
+        await interaction.response.send_modal(
+            NotaModal(self.menu_view)
+        )
+
+
+class CancelarButton(discord.ui.Button):
+    def __init__(self, view):
+        super().__init__(
+            label="❌ Cancelar",
+            style=discord.ButtonStyle.danger
+        )
+        self.menu_view = view
+
+    async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.menu_view.usuario.id:
+            await interaction.response.send_message(
+                "❌ Este menú no es tuyo.",
+                ephemeral=True
+            )
+            return
+
+        await interaction.response.edit_message(
+            content="❌ Pedido cancelado.",
+            embed=None,
+            view=None
+        )
+        self.menu_view.stop()
+
+
+# ───────── VIEW DEL MENÚ ─────────
+
+class MenuComidaView(discord.ui.View):
+    def __init__(self, ctx, menu, balance):
+        super().__init__(timeout=300)
+        self.ctx = ctx
+        self.usuario = ctx.author
+        self.menu = menu
+        self.balance = balance
+        self.nota = "Sin nota."
+
+        for item in menu.values():
+            puede_pagar = balance is None or balance >= item["precio"]
+            self.add_item(
+                ProductoButton(item, puede_pagar, self)
+            )
+
+        self.add_item(NotaButton(self))
+        self.add_item(CancelarButton(self))
+
+
+# ───────── FUNCIÓN PÚBLICA (SE LLAMA DESDE MAIN) ─────────
+
+async def mostrar_menu_comida(ctx, balance=None):
+    with open(RUTA_MENU_COMIDA, encoding="utf-8") as f:
+        menu = json.load(f)
+
+    embed = discord.Embed(
+        title="🍔 Menú de Comida",
+        description=(
+            "Haz click en un producto para pedirlo.\n"
+            "El pago se realiza con `/item buy`."
+        ),
+        color=discord.Color.orange()
+    )
+
+    if balance is not None:
+        embed.add_field(
+            name="💰 Tus monedas",
+            value=str(balance),
+            inline=False
+        )
+
+    embed.add_field(
+        name="━━━━━━━━━━━━━━━━━━━━",
+        value="\u200b",
+        inline=False
+    )
+
+    for item in menu.values():
+        embed.add_field(
+            name=item["nombre"],
+            value=(
+                f'{item["descripcion"]}\n'
+                f'💰 **{item["precio']} monedas**'
+            ),
+            inline=False
+        )
+
+    view = MenuComidaView(ctx, menu, balance)
+    await ctx.send(embed=embed, view=view)
