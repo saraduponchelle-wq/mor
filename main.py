@@ -1,5 +1,7 @@
 import discord
 from discord import app_commands
+from events.reaction_add import handle_reaction_add
+from events.reaction_remove import handle_reaction_remove
 import os
 
 # ───────── CONFIG ─────────
@@ -23,6 +25,12 @@ class Bot(discord.Client):
 
 bot = Bot()
 
+# 🔹 estado global del juego
+bot.jugadores = []
+bot.mensaje_registro = None
+bot.NOMBRE_ROL = "Jugador"
+
+
 # ───────── EVENTOS ─────────
 
 @bot.event
@@ -42,53 +50,15 @@ async def on_member_remove(member):
 # ───────── REACCIONES ─────────
 # (esto conecta con tu sistema de registro)
 
-jugadores = []
-mensaje_registro = None
-NOMBRE_ROL = "Jugador"  # cambia si hace falta
 
 @bot.event
 async def on_reaction_add(reaction, user):
-    global mensaje_registro
-
-    if user.bot or not mensaje_registro:
-        return
-
-    if reaction.message.id != mensaje_registro.id:
-        return
-
-    if str(reaction.emoji) != "🎉":
-        return
-
-    guild = reaction.message.guild
-    member = guild.get_member(user.id)
-    rol = discord.utils.get(guild.roles, name=NOMBRE_ROL)
-
-    if not rol or member in jugadores:
-        return
-
-    jugadores.append(member)
-    await member.add_roles(rol)
+    await handle_reaction_add(bot, reaction, user)
 
 @bot.event
 async def on_reaction_remove(reaction, user):
-    global mensaje_registro
+    await handle_reaction_remove(bot, reaction, user)
 
-    if user.bot or not mensaje_registro:
-        return
-
-    if reaction.message.id != mensaje_registro.id:
-        return
-
-    if str(reaction.emoji) != "🎉":
-        return
-
-    guild = reaction.message.guild
-    member = guild.get_member(user.id)
-    rol = discord.utils.get(guild.roles, name=NOMBRE_ROL)
-
-    if member in jugadores:
-        jugadores.remove(member)
-        await member.remove_roles(rol)
 
 # ───────── IMPORTAR COMANDOS ─────────
 # aquí conectas tus archivos externos

@@ -7,13 +7,13 @@ OWNER_ID = 903114752060977202
 EMOJI_RANDOM = "<a:random:1451014515473911828>"
 EMOJI_JIJI = "<:jiji:1451013733513035920>"
 
-async def on_reaction_add(reaction, user):
-    bot = reaction.message._state._get_client()
-
+async def handle_reaction_add(bot, reaction, user):
     if user.bot or not bot.mensaje_registro:
         return
+
     if reaction.message.id != bot.mensaje_registro.id:
         return
+
     if str(reaction.emoji) != "🎉":
         return
 
@@ -30,10 +30,6 @@ async def on_reaction_add(reaction, user):
     canal = guild.get_channel(CANAL_RULETA_ID)
     if canal:
         if member.id == OWNER_ID:
-            await canal.send(
-                f"👑✨ {EMOJI_JIJI} **Mi creadora ha entrado a la ruleta.**"
-            )
+            await canal.send(f"👑✨ {EMOJI_JIJI} **Mi creadora ha entrado a la ruleta.**")
         else:
-            await canal.send(
-                f"{EMOJI_RANDOM} {member.mention} se unió a la ruleta."
-            )
+            await canal.send(f"{EMOJI_RANDOM} {member.mention} se unió a la ruleta.")
