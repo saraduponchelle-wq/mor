@@ -1,22 +1,16 @@
 import discord
-from discord import ui, app_commands
+from discord import ui
 import json
-
-# ───────── CONFIG ─────────
 
 MESEROS_ROLE_ID = 1452528262608850964
 COLOR_STORE = 0x2b2d31
 DATA_PATH = "data/comida.json"
-
-# ───────── CARGAR JSON ─────────
 
 def cargar_menu():
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 MENU_COMIDA = cargar_menu()
-
-# ───────── MODAL NOTA ─────────
 
 class NotaPedidoModal(ui.Modal, title="📝 Nota para el pedido"):
     nota = ui.TextInput(
@@ -47,8 +41,6 @@ class NotaPedidoModal(ui.Modal, title="📝 Nota para el pedido"):
             allowed_mentions=discord.AllowedMentions(roles=True)
         )
 
-# ───────── SELECT MENU ─────────
-
 class SelectorComida(ui.Select):
     def __init__(self):
         options = [
@@ -59,7 +51,6 @@ class SelectorComida(ui.Select):
             )
             for item in MENU_COMIDA
         ]
-
         super().__init__(
             placeholder="🍽️ Selecciona tu comida",
             options=options
@@ -70,26 +61,17 @@ class SelectorComida(ui.Select):
             item for item in MENU_COMIDA
             if item["nombre"] == self.values[0]
         )
-
         await interaction.response.send_modal(
             NotaPedidoModal(producto)
         )
-
-# ───────── VIEW ─────────
 
 class MenuComidaView(ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.add_item(SelectorComida())
 
-# ───────── SLASH COMMAND ─────────
-
-@app_commands.command(
-    name="menucomida",
-    description="Muestra el menú de comida"
-)
-@app_commands.describe(balance="Tu balance actual (opcional)")
-async def menucomida(
+# 🔥 ESTA FUNCIÓN ES LA QUE SE IMPORTA
+async def mostrar_menu_comida(
     interaction: discord.Interaction,
     balance: int | None = None
 ):
