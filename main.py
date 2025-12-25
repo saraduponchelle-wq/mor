@@ -74,7 +74,9 @@ from comands.reto import reto
 
 
 # Menús
-from menus.comida import mostrar_menu_comida
+from menus.comida import menu_group
+
+
 
 # from menus.bar import mostrar_menu_bar
 
@@ -88,6 +90,8 @@ bot.tree.add_command(girar)
 bot.tree.add_command(orden)
 bot.tree.add_command(reto)
 bot.tree.add_command(help_cmd)
+bot.tree.add_command(menu_group)
+
 
 # ───────── RUN ─────────
 
