@@ -105,7 +105,7 @@ from comands.reto import reto
 
 # Menús
 from menus.comida import mostrar_menu_comida
-from menus.bar import mostrar_menu_bar
+# from menus.bar import mostrar_menu_bar
 
 # ───────── REGISTRAR SLASH COMMANDS ─────────
 
