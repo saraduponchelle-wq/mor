@@ -105,46 +105,46 @@ async def on_reaction_remove(reaction, user):
 
 # ───────── SLASH COMMANDS ─────────
 
-    @bot.tree.command(name="start", description="Inicia la ruleta")
-    async def start(interaction: discord.Interaction):
-        global mensaje_registro
-        jugadores.clear()
+@bot.tree.command(name="start", description="Inicia la ruleta")
+async def start(interaction: discord.Interaction):
+    global mensaje_registro
+    jugadores.clear()
 
-        # Mensaje principal con reacción
-        await interaction.response.send_message(
-            f"{EMOJI_RANDOM} **¡Juego de Ruleta Iniciado!**\n\n"
-            f"{EMOJI_JIJI} Reacciona con 🎉 para unirte."
+    # Mensaje principal con reacción
+    await interaction.response.send_message(
+        f"{EMOJI_RANDOM} **¡Juego de Ruleta Iniciado!**\n\n"
+        f"{EMOJI_JIJI} Reacciona con 🎉 para unirte."
+    )
+
+    mensaje_registro = await interaction.original_response()
+    await mensaje_registro.add_reaction("🎉")
+
+    guild = interaction.guild
+    canal_noticias = guild.get_channel(CANAL_NOTICIAS_ID)
+
+    # Aviso público
+    if canal_noticias:
+        await canal_noticias.send(
+            f"@everyone {EMOJI_RANDOM} **¡La ruleta ha comenzado!**\n"
+            f"{EMOJI_JIJI} Ve al canal del juego."
         )
 
-        mensaje_registro = await interaction.original_response()
-        await mensaje_registro.add_reaction("🎉")
+    # Evento programado (igual que antes)
+    inicio = discord.utils.utcnow() + timedelta(minutes=1)
+    fin = inicio + timedelta(hours=1)
 
-        guild = interaction.guild
-        canal_noticias = guild.get_channel(CANAL_NOTICIAS_ID)
-
-        # Aviso público
-        if canal_noticias:
-            await canal_noticias.send(
-                f"@everyone {EMOJI_RANDOM} **¡La ruleta ha comenzado!**\n"
-                f"{EMOJI_JIJI} Ve al canal del juego."
-            )
-
-        # Evento programado (igual que antes)
-        inicio = discord.utils.utcnow() + timedelta(minutes=1)
-        fin = inicio + timedelta(hours=1)
-
-        try:
-            await guild.create_scheduled_event(
-                name="🎰 Ruleta en marcha",
-                description="La ruleta ha comenzado.\nReacciona para participar.",
-                start_time=inicio,
-                end_time=fin,
-                entity_type=discord.EntityType.external,
-                location="Ruleta del servidor",
-                privacy_level=discord.PrivacyLevel.guild_only
-            )
-        except Exception as e:
-            print("Error creando evento:", e)
+    try:
+        await guild.create_scheduled_event(
+            name="🎰 Ruleta en marcha",
+            description="La ruleta ha comenzado.\nReacciona para participar.",
+            start_time=inicio,
+            end_time=fin,
+            entity_type=discord.EntityType.external,
+            location="Ruleta del servidor",
+            privacy_level=discord.PrivacyLevel.guild_only
+        )
+    except Exception as e:
+        print("Error creando evento:", e)
 
 
 @bot.tree.command(name="girar", description="Gira la ruleta")
