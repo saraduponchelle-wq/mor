@@ -1,5 +1,5 @@
 import discord
-from discord import ui
+from discord import ui, app_commands
 import json
 
 # ───────── CONFIG ─────────
@@ -82,9 +82,14 @@ class MenuComidaView(ui.View):
         super().__init__(timeout=None)
         self.add_item(SelectorComida())
 
-# ───────── FUNCIÓN PARA SLASH ─────────
+# ───────── SLASH COMMAND ─────────
 
-async def mostrar_menu_comida(
+@app_commands.command(
+    name="menucomida",
+    description="Muestra el menú de comida"
+)
+@app_commands.describe(balance="Tu balance actual (opcional)")
+async def menucomida(
     interaction: discord.Interaction,
     balance: int | None = None
 ):
