@@ -82,9 +82,12 @@ class MenuComidaView(ui.View):
         super().__init__(timeout=None)
         self.add_item(SelectorComida())
 
-# ───────── FUNCIÓN PRINCIPAL ─────────
+# ───────── FUNCIÓN PARA SLASH ─────────
 
-async def mostrar_menu_comida(ctx, balance: int | None = None):
+async def mostrar_menu_comida(
+    interaction: discord.Interaction,
+    balance: int | None = None
+):
     descripcion = (
         "Haz clic en un producto para pedirlo.\n"
         "El pago se realiza con `/item buy`.\n\n"
@@ -96,7 +99,7 @@ async def mostrar_menu_comida(ctx, balance: int | None = None):
     embed = discord.Embed(
         title="🍔 Menú de Comida",
         description=descripcion,
-        color=0x2b2d31
+        color=COLOR_STORE
     )
 
     for item in MENU_COMIDA:
@@ -110,7 +113,7 @@ async def mostrar_menu_comida(ctx, balance: int | None = None):
             inline=False
         )
 
-    await ctx.send(
+    await interaction.response.send_message(
         embed=embed,
         view=MenuComidaView()
     )
