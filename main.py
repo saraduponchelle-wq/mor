@@ -442,7 +442,7 @@ async def embed(ctx):
 
 
 @bot.command()
-async def menucomida(ctx, balance: int = None):
+async def menucomida(ctx, balance: int = 0):
     await mostrar_menu_comida(ctx, balance)
 
 
