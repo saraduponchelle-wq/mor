@@ -121,4 +121,5 @@ bot.tree.add_command(help_cmd)
 
 # ───────── RUN ─────────
 
-bot.run(DISCORD_TOKEN)
+TOKEN = os.getenv("DISCORD_TOKEN")
+bot.run(TOKEN)
