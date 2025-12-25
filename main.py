@@ -16,7 +16,7 @@ intents.members = True
 
 OWNER_ID = 903114752060977202
 NOMBRE_ROL = "Ruleta"
-NOMBRE_CANAL_RULETA = "﹕₊˚ʚ🎲ɞ・𝚁𝚞𝚕𝚎𝚝𝚊"
+CANAL_RULETA_ID = 1447699143417135145
 CANAL_NOTICIAS_ID = 1451664597843968111
 
 EMOJI_RANDOM = "<a:random:1451014515473911828>"
@@ -68,6 +68,7 @@ async def on_ready():
 @bot.event
 async def on_reaction_add(reaction, user):
     global mensaje_registro
+
     if user.bot or not mensaje_registro:
         return
     if reaction.message.id != mensaje_registro.id:
@@ -85,9 +86,24 @@ async def on_reaction_add(reaction, user):
     jugadores.append(member)
     await member.add_roles(rol)
 
+    # 🔽🔽🔽 ESTO ES LO NUEVO 🔽🔽🔽
+    canal = guild.get_channel(CANAL_RULETA_ID)
+    if canal:
+        if member.id == OWNER_ID:
+            await canal.send(
+                f"👑✨ {EMOJI_JIJI} **Mi creadora ha descendido a la ruleta.**\n"
+                f"{EMOJI_RANDOM} El destino se inclina ante ti."
+            )
+        else:
+            await canal.send(
+                f"{EMOJI_RANDOM} {member.mention} se unió a la ruleta."
+            )
+
+
 @bot.event
 async def on_reaction_remove(reaction, user):
     global mensaje_registro
+
     if user.bot or not mensaje_registro:
         return
     if reaction.message.id != mensaje_registro.id:
@@ -99,9 +115,24 @@ async def on_reaction_remove(reaction, user):
     member = guild.get_member(user.id)
     rol = discord.utils.get(guild.roles, name=NOMBRE_ROL)
 
-    if member in jugadores:
-        jugadores.remove(member)
-        await member.remove_roles(rol)
+    if member not in jugadores:
+        return
+
+    jugadores.remove(member)
+    await member.remove_roles(rol)
+
+    # 🔽🔽🔽 ESTO ES LO QUE FALTABA 🔽🔽🔽
+    canal = guild.get_channel(CANAL_RULETA_ID)
+    if canal:
+        if member.id == OWNER_ID:
+            await canal.send(
+                f"🕯️👑 {EMOJI_JIJI} **Mi creadora ha abandonado la ruleta.**"
+            )
+        else:
+            await canal.send(
+                f"{EMOJI_ENOJO} {member.mention} salió de la ruleta."
+            )
+
 
 # ───────── SLASH COMMANDS ─────────
 
