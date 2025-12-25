@@ -1,50 +1,18 @@
 {
   "hamburguesa_clasica": {
-    "nombre": "Hamburguesa Clásica",
-    "emoji": "🍔",
+    "nombre": "🍔 Hamburguesa Clásica",
     "descripcion": "Pan artesanal, carne jugosa, lechuga y tomate.",
     "precio": 350
   },
   "hamburguesa_doble": {
-    "nombre": "Hamburguesa Doble",
-    "emoji": "🍔",
-    "descripcion": "Doble carne, doble queso y salsa especial de la casa.",
+    "nombre": "🍔 Hamburguesa Doble",
+    "descripcion": "Doble carne, doble queso y salsa especial.",
     "precio": 600
   },
-  "pizza_personal": {
-    "nombre": "Pizza Personal",
-    "emoji": "🍕",
-    "descripcion": "Pizza individual de queso con orégano.",
-    "precio": 450
-  },
   "hotdog": {
-    "nombre": "Hot Dog",
-    "emoji": "🌭",
+    "nombre": "🌭 Hot Dog",
     "descripcion": "Salchicha premium con mostaza y kétchup.",
     "precio": 300
-  },
-  "papas_fritas": {
-    "nombre": "Papas Fritas",
-    "emoji": "🍟",
-    "descripcion": "Papas crujientes con sal y especias.",
-    "precio": 200
-  },
-  "pollo_frito": {
-    "nombre": "Pollo Frito",
-    "emoji": "🍗",
-    "descripcion": "Piezas de pollo empanizado súper crujiente.",
-    "precio": 550
-  },
-  "taco_mexicano": {
-    "nombre": "Taco Mexicano",
-    "emoji": "🌮",
-    "descripcion": "Taco de carne con cebolla, cilantro y limón.",
-    "precio": 280
-  },
-  "refresco": {
-    "nombre": "Refresco",
-    "emoji": "🥤",
-    "descripcion": "Bebida fría a elección (cola, naranja o limón).",
-    "precio": 150
   }
 }
+
