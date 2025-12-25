@@ -94,15 +94,14 @@ async def on_reaction_remove(reaction, user):
 # aquí conectas tus archivos externos
 
 # Admin
-from commands.admin.start import start
-from commands.admin.end import end
+from comands.start import start
+from comands.end import end
+from comands.adorar import adorar
+from comands.girar import girar
+from comands.help import help_cmd
+from comands.orden import orden
+from comands.reto import reto
 
-# Usuario
-from commands.adorar import adorar
-from commands.girar import girar
-from commands.orden import orden
-from commands.reto import reto
-from commands.help import help_cmd
 
 # Menús
 from menus.comida import mostrar_menu_comida
