@@ -121,4 +121,4 @@ bot.tree.add_command(help_cmd)
 
 # ───────── RUN ─────────
 
-bot.run(TOKEN)
+bot.run(DISCORD_TOKEN)
