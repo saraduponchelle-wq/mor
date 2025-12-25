@@ -2,61 +2,123 @@ import discord
 from discord import app_commands
 import os
 
-intents = discord.Intents.default()
-intents.message_content = True
-intents.reactions = True
-intents.guilds = True
-intents.members = True
+# ───────── CONFIG ─────────
+
+INTENTS = discord.Intents.default()
+INTENTS.members = True
+INTENTS.message_content = True
+INTENTS.reactions = True
+
+# ───────── CLIENTE ─────────
 
 class Bot(discord.Client):
     def __init__(self):
-        super().__init__(intents=intents)
+        super().__init__(intents=INTENTS)
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
-        # EVENTS
-        from events.ready import on_ready
-        from events.reaction_add import on_reaction_add
-        from events.reaction_remove import on_reaction_remove
-
-        self.add_listener(on_ready)
-        self.add_listener(on_reaction_add)
-        self.add_listener(on_reaction_remove)
-
-        # ADMIN
-        from admin.solo_owner import solo_owner
-        self.tree.add_command(solo_owner)
-
-        # COMMANDS
-        from commands.start import start
-        from commands.end import end
-        from commands.girar import girar
-        from commands.orden import orden
-        from commands.reto import reto
-        from commands.adorar import adorar
-        from commands.help import help_cmd
-
-        self.tree.add_command(start)
-        self.tree.add_command(end)
-        self.tree.add_command(girar)
-        self.tree.add_command(orden)
-        self.tree.add_command(reto)
-        self.tree.add_command(adorar)
-        self.tree.add_command(help_cmd)
-
-        # MENUS (directos)
-        from menus.comida import menucomida
-        from menus.bar import menubar
-
-        self.tree.add_command(menucomida)
-        self.tree.add_command(menubar)
-
+        # sincroniza slash commands
         await self.tree.sync()
+        print("✅ Slash commands sincronizados")
 
 bot = Bot()
 
-bot.jugadores = []
-bot.mensaje_registro = None
+# ───────── EVENTOS ─────────
 
-TOKEN = os.getenv("DISCORD_TOKEN")
+@bot.event
+async def on_ready():
+    print(f"🤖 Bot conectado como {bot.user}")
+
+@bot.event
+async def on_member_join(member):
+    # ejemplo (opcional)
+    print(f"➕ {member} se unió al servidor")
+
+@bot.event
+async def on_member_remove(member):
+    # ejemplo (opcional)
+    print(f"➖ {member} salió del servidor")
+
+# ───────── REACCIONES ─────────
+# (esto conecta con tu sistema de registro)
+
+jugadores = []
+mensaje_registro = None
+NOMBRE_ROL = "Jugador"  # cambia si hace falta
+
+@bot.event
+async def on_reaction_add(reaction, user):
+    global mensaje_registro
+
+    if user.bot or not mensaje_registro:
+        return
+
+    if reaction.message.id != mensaje_registro.id:
+        return
+
+    if str(reaction.emoji) != "🎉":
+        return
+
+    guild = reaction.message.guild
+    member = guild.get_member(user.id)
+    rol = discord.utils.get(guild.roles, name=NOMBRE_ROL)
+
+    if not rol or member in jugadores:
+        return
+
+    jugadores.append(member)
+    await member.add_roles(rol)
+
+@bot.event
+async def on_reaction_remove(reaction, user):
+    global mensaje_registro
+
+    if user.bot or not mensaje_registro:
+        return
+
+    if reaction.message.id != mensaje_registro.id:
+        return
+
+    if str(reaction.emoji) != "🎉":
+        return
+
+    guild = reaction.message.guild
+    member = guild.get_member(user.id)
+    rol = discord.utils.get(guild.roles, name=NOMBRE_ROL)
+
+    if member in jugadores:
+        jugadores.remove(member)
+        await member.remove_roles(rol)
+
+# ───────── IMPORTAR COMANDOS ─────────
+# aquí conectas tus archivos externos
+
+# Admin
+from commands.admin.start import start
+from commands.admin.end import end
+
+# Usuario
+from commands.adorar import adorar
+from commands.girar import girar
+from commands.orden import orden
+from commands.reto import reto
+from commands.help import help_cmd
+
+# Menús
+from menus.comida import mostrar_menu_comida
+from menus.bar import mostrar_menu_bar
+
+# ───────── REGISTRAR SLASH COMMANDS ─────────
+
+bot.tree.add_command(start)
+bot.tree.add_command(end)
+
+bot.tree.add_command(adorar)
+bot.tree.add_command(girar)
+bot.tree.add_command(orden)
+bot.tree.add_command(reto)
+bot.tree.add_command(help_cmd)
+
+# ───────── RUN ─────────
+
 bot.run(TOKEN)
