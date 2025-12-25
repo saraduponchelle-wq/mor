@@ -1,39 +1,45 @@
 import discord
 from discord import ui
+import json
+
+# ───────── CONFIG ─────────
 
 MESEROS_ROLE_ID = 1452528262608850964
 COLOR_STORE = 0x2b2d31
+DATA_PATH = "data/comida.json"
 
-MENU_COMIDA = [
-    {"nombre": "Hamburguesa Clásica", "emoji": "🍔", "descripcion": "Pan artesanal, carne jugosa.", "precio": 350},
-    {"nombre": "Pizza Personal", "emoji": "🍕", "descripcion": "Pizza individual de queso.", "precio": 450},
-    {"nombre": "Papas Fritas", "emoji": "🍟", "descripcion": "Papas crujientes.", "precio": 200},
-]
+# ───────── CARGAR JSON ─────────
 
-# ───────── MODAL ─────────
+def cargar_menu():
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-class NotaModal(ui.Modal, title="📝 Nota para el pedido"):
+MENU_COMIDA = cargar_menu()
+
+# ───────── MODAL NOTA ─────────
+
+class NotaPedidoModal(ui.Modal, title="📝 Nota para el pedido"):
     nota = ui.TextInput(
         label="Nota (opcional)",
-        placeholder="Ej: sin cebolla",
+        placeholder="Ej: sin cebolla, bien cocido, etc.",
         required=False,
         max_length=200
     )
 
-    def __init__(self, item):
+    def __init__(self, producto):
         super().__init__()
-        self.item = item
+        self.producto = producto
 
     async def on_submit(self, interaction: discord.Interaction):
         rol = interaction.guild.get_role(MESEROS_ROLE_ID)
 
         mensaje = (
             f"📢 **Nuevo pedido**\n\n"
-            f"{self.item['emoji']} **{self.item['nombre']}**\n"
-            f"💰 {self.item['precio']} monedas\n"
-            f"📝 {self.nota.value or 'Sin nota'}\n\n"
+            f"{self.producto['emoji']} **Producto:** {self.producto['nombre']}\n"
+            f"💰 **Precio:** {self.producto['precio']} monedas\n"
+            f"📝 **Nota:** {self.nota.value or 'Sin nota'}\n\n"
             f"{rol.mention if rol else ''}\n"
-            f"➡️ `/item buy {self.item['nombre']}`"
+            f"➡️ Comprar con: `/item buy {self.producto['nombre']}`"
         )
 
         await interaction.response.send_message(
@@ -41,37 +47,70 @@ class NotaModal(ui.Modal, title="📝 Nota para el pedido"):
             allowed_mentions=discord.AllowedMentions(roles=True)
         )
 
-# ───────── BOTÓN ─────────
+# ───────── SELECT MENU ─────────
 
-class OrdenView(ui.View):
-    def __init__(self, item, balance):
-        super().__init__(timeout=300)
-
-        self.add_item(
-            ui.Button(
-                label=f"{item['precio']} 💵",
-                style=discord.ButtonStyle.success,
-                disabled=balance < item["precio"],
-                custom_id=item["nombre"]
+class SelectorComida(ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(
+                label=item["nombre"],
+                description=f"{item['precio']} monedas",
+                emoji=item["emoji"]
             )
+            for item in MENU_COMIDA
+        ]
+
+        super().__init__(
+            placeholder="🍽️ Selecciona tu comida",
+            options=options
         )
 
-        async def callback(interaction: discord.Interaction):
-            await interaction.response.send_modal(NotaModal(item))
+    async def callback(self, interaction: discord.Interaction):
+        producto = next(
+            item for item in MENU_COMIDA
+            if item["nombre"] == self.values[0]
+        )
 
-        self.children[0].callback = callback
+        await interaction.response.send_modal(
+            NotaPedidoModal(producto)
+        )
+
+# ───────── VIEW ─────────
+
+class MenuComidaView(ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(SelectorComida())
 
 # ───────── FUNCIÓN PRINCIPAL ─────────
 
-async def mostrar_menu_comida(ctx, balance: int):
+async def mostrar_menu_comida(ctx, balance: int | None = None):
+    descripcion = (
+        "Haz clic en un producto para pedirlo.\n"
+        "El pago se realiza con `/item buy`.\n\n"
+    )
+
+    if balance is not None:
+        descripcion += f"💰 **Tu balance:** {balance} monedas\n\n"
+
+    embed = discord.Embed(
+        title="🍔 Menú de Comida",
+        description=descripcion,
+        color=0x2b2d31
+    )
+
     for item in MENU_COMIDA:
-        embed = discord.Embed(
-            title=f"{item['emoji']} {item['nombre']}",
-            description=f"{item['descripcion']}\n\n💰 **{item['precio']} monedas**",
-            color=COLOR_STORE
+        embed.add_field(
+            name=f"{item['emoji']} **{item['nombre']}**",
+            value=(
+                f"{item['descripcion']}\n\n"
+                f"💰 **{item['precio']} monedas**\n\n"
+                "━━━━━━━━━━━━━━"
+            ),
+            inline=False
         )
 
-        await ctx.send(
-            embed=embed,
-            view=OrdenView(item, balance)
-        )
+    await ctx.send(
+        embed=embed,
+        view=MenuComidaView()
+    )

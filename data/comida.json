@@ -1,0 +1,14 @@
+[
+  {
+    "nombre": "Hamburguesa Clásica",
+    "emoji": "🍔",
+    "descripcion": "Pan artesanal, carne jugosa, lechuga y tomate.",
+    "precio": 350
+  },
+  {
+    "nombre": "Pizza Personal",
+    "emoji": "🍕",
+    "descripcion": "Pizza individual de queso con orégano.",
+    "precio": 450
+  }
+]
