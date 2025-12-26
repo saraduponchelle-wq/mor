@@ -1,50 +1,50 @@
 [
   {
-    "nombre": "Martini Clásico",
-    "emoji": "🍸",
-    "precio": 120,
-    "descripcion": "Ginebra premium con vermut seco, elegante y sofisticado."
-  },
-  {
     "nombre": "Mojito",
     "emoji": "🍃",
     "precio": 90,
-    "descripcion": "Ron blanco, hierbabuena fresca, limón y soda."
+    "descripcion": "Ron blanco, limón, hierbabuena y soda."
   },
   {
     "nombre": "Piña Colada",
     "emoji": "🍍",
     "precio": 110,
-    "descripcion": "Ron, crema de coco y jugo de piña bien frío."
+    "descripcion": "Ron con crema de coco y piña."
   },
   {
-    "nombre": "Whisky on the Rocks",
+    "nombre": "Martini",
+    "emoji": "🍸",
+    "precio": 120,
+    "descripcion": "Ginebra con vermut seco."
+  },
+  {
+    "nombre": "Whisky",
     "emoji": "🥃",
     "precio": 150,
-    "descripcion": "Whisky añejo servido con hielo."
-  },
-  {
-    "nombre": "Tequila Sunrise",
-    "emoji": "🌅",
-    "precio": 100,
-    "descripcion": "Tequila, jugo de naranja y granadina."
+    "descripcion": "Whisky añejo servido solo o con hielo."
   },
   {
     "nombre": "Gin Tonic",
     "emoji": "🍋",
     "precio": 95,
-    "descripcion": "Ginebra con tónica y un toque cítrico."
+    "descripcion": "Ginebra con tónica y limón."
   },
   {
-    "nombre": "Cerveza Artesanal",
+    "nombre": "Tequila Sunrise",
+    "emoji": "🌅",
+    "precio": 100,
+    "descripcion": "Tequila con naranja y granadina."
+  },
+  {
+    "nombre": "Cerveza",
     "emoji": "🍺",
     "precio": 70,
-    "descripcion": "Cerveza fría de producción artesanal."
+    "descripcion": "Cerveza bien fría."
   },
   {
     "nombre": "Vino Tinto",
     "emoji": "🍷",
     "precio": 85,
-    "descripcion": "Copa de vino tinto suave y aromático."
+    "descripcion": "Copa de vino tinto."
   }
 ]

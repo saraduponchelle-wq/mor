@@ -1,73 +1,73 @@
 [
   {
-    "nombre": "Croissant de Mantequilla",
-    "emoji": "🥐",
-    "precio": 55,
-    "descripcion": "Hojaldre crujiente recién horneado."
+    "categoria": "Comida",
+    "nombre": "Hamburguesa Clásica",
+    "descripcion": "Carne jugosa con queso y vegetales",
+    "precio": 120,
+    "emoji": "🍔"
   },
   {
+    "categoria": "Comida",
+    "nombre": "Pizza Personal",
+    "descripcion": "Pizza individual de pepperoni",
+    "precio": 150,
+    "emoji": "🍕"
+  },
+  {
+    "categoria": "Comida",
+    "nombre": "Papas Fritas",
+    "descripcion": "Crujientes y doradas",
+    "precio": 80,
+    "emoji": "🍟"
+  },
+  {
+    "categoria": "Comida",
     "nombre": "Sandwich Mixto",
-    "emoji": "🥪",
-    "precio": 85,
-    "descripcion": "Jamón y queso derretido en pan tostado."
+    "descripcion": "Jamón y queso caliente",
+    "precio": 90,
+    "emoji": "🥪"
   },
+
   {
-    "nombre": "Tostadas con Mermelada",
-    "emoji": "🍞",
-    "precio": 45,
-    "descripcion": "Pan tostado con mantequilla y mermelada."
-  },
-  {
-    "nombre": "Panqueques con Miel",
-    "emoji": "🥞",
-    "precio": 75,
-    "descripcion": "Panqueques esponjosos bañados en miel."
-  },
-  {
-    "nombre": "Muffin de Arándanos",
-    "emoji": "🧁",
+    "categoria": "Bebida",
+    "nombre": "Café Espresso",
+    "descripcion": "Café intenso y aromático",
     "precio": 60,
-    "descripcion": "Muffin suave relleno de arándanos."
+    "emoji": "☕"
   },
   {
-    "nombre": "Cheesecake",
-    "emoji": "🍰",
-    "precio": 95,
-    "descripcion": "Porción de cheesecake cremoso."
+    "categoria": "Bebida",
+    "nombre": "Capuchino",
+    "descripcion": "Café con espuma de leche",
+    "precio": 75,
+    "emoji": "☕"
   },
   {
-    "nombre": "Brownie de Chocolate",
-    "emoji": "🍫",
+    "categoria": "Bebida",
+    "nombre": "Latte",
+    "descripcion": "Café suave con leche",
     "precio": 70,
-    "descripcion": "Brownie húmedo con trozos de chocolate."
+    "emoji": "🥛"
   },
   {
-    "nombre": "Empanada de Queso",
-    "emoji": "🥟",
-    "precio": 65,
-    "descripcion": "Empanada horneada rellena de queso."
-  {
-    "nombre": "Café Americano",
-    "emoji": "☕",
-    "precio": 40,
-    "descripcion": "Café negro recién preparado."
-  },
-  {
-    "nombre": "Cappuccino",
-    "emoji": "☕",
-    "precio": 55,
-    "descripcion": "Café con leche espumosa y cacao."
-  },
-  {
+    "categoria": "Bebida",
     "nombre": "Chocolate Caliente",
-    "emoji": "🍫",
-    "precio": 50,
-    "descripcion": "Chocolate espeso y caliente."
+    "descripcion": "Bebida caliente de cacao",
+    "precio": 85,
+    "emoji": "🍫"
   },
   {
-    "nombre": "Té de Hierbas",
-    "emoji": "🍵",
-    "precio": 35,
-    "descripcion": "Infusión relajante de hierbas."
+    "categoria": "Bebida",
+    "nombre": "Té Chai",
+    "descripcion": "Té especiado y aromático",
+    "precio": 65,
+    "emoji": "🍵"
+  },
+  {
+    "categoria": "Bebida",
+    "nombre": "Jugo Natural",
+    "descripcion": "Jugo de frutas frescas",
+    "precio": 55,
+    "emoji": "🧃"
   }
 ]
