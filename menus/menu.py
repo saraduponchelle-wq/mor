@@ -55,8 +55,11 @@ class NotaPedidoModal(ui.Modal, title="📝 Nota para el pedido"):
             rol = interaction.guild.get_role(MESEROS_ROLE_ID)
             titulo = "☕ Nuevo pedido del CAFÉ"
 
+        cliente = interaction.user.mention
+
         mensaje = (
             f"📢 **{titulo}**\n\n"
+            f"👤 **Cliente:** {cliente}\n\n"
             f"{self.producto['emoji']} **Producto:** {self.producto['nombre']}\n"
             f"💰 **Precio:** S/ {self.producto['precio']}\n"
             f"📝 **Nota:** {self.nota.value or 'Sin nota'}\n\n"
