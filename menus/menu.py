@@ -27,7 +27,7 @@ MENU_CAFE = [
     {"id": "chocolate", "nombre": "Chocolate Caliente", "precio": 9, "emoji": "🍫"},
     {"id": "te", "nombre": "Té Aromático", "precio": 6, "emoji": "🍵"},
     {"id": "frappe", "nombre": "Frappé", "precio": 11, "emoji": "🧋"},
-    {"id": "limonada", "nombre": "Limonada", "precio": 8, "emoji": "🍋"},
+    {"id": "Sandwich Mixto", "nombre": "Sandwich Mixto", "precio": 14, "emoji": "🥪"},
     {"id": "croissant", "nombre": "Croissant", "precio": 9, "emoji": "🥐"},
 ]
 
