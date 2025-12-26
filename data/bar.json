@@ -1,12 +1,50 @@
-{
-  "whisky": {
-    "nombre": "Whisky",
-    "precio": 500,
-    "emoji": "🥃"
+[
+  {
+    "nombre": "Martini Clásico",
+    "emoji": "🍸",
+    "precio": 120,
+    "descripcion": "Ginebra premium con vermut seco, elegante y sofisticado."
   },
-  "vino": {
-    "nombre": "Vino",
-    "precio": 300,
-    "emoji": "🍷"
+  {
+    "nombre": "Mojito",
+    "emoji": "🍃",
+    "precio": 90,
+    "descripcion": "Ron blanco, hierbabuena fresca, limón y soda."
+  },
+  {
+    "nombre": "Piña Colada",
+    "emoji": "🍍",
+    "precio": 110,
+    "descripcion": "Ron, crema de coco y jugo de piña bien frío."
+  },
+  {
+    "nombre": "Whisky on the Rocks",
+    "emoji": "🥃",
+    "precio": 150,
+    "descripcion": "Whisky añejo servido con hielo."
+  },
+  {
+    "nombre": "Tequila Sunrise",
+    "emoji": "🌅",
+    "precio": 100,
+    "descripcion": "Tequila, jugo de naranja y granadina."
+  },
+  {
+    "nombre": "Gin Tonic",
+    "emoji": "🍋",
+    "precio": 95,
+    "descripcion": "Ginebra con tónica y un toque cítrico."
+  },
+  {
+    "nombre": "Cerveza Artesanal",
+    "emoji": "🍺",
+    "precio": 70,
+    "descripcion": "Cerveza fría de producción artesanal."
+  },
+  {
+    "nombre": "Vino Tinto",
+    "emoji": "🍷",
+    "precio": 85,
+    "descripcion": "Copa de vino tinto suave y aromático."
   }
-}
+]
