@@ -3,7 +3,9 @@ from discord import ui, app_commands
 
 # ───────── CONFIG ─────────
 
-MESEROS_ROLE_ID = 1452528262608850964  # ⬅️ CAMBIA ESTO
+MESEROS_ROLE_ID = 1452528262608850964      # ☕ Meseros
+BARTENDERS_ROLE_ID = 1453930787928805386   # 🍷 Bartenders (CAMBIA)
+
 COLOR_BAR = 0x6f1d1b
 COLOR_CAFE = 0x5a3e2b
 
@@ -27,7 +29,7 @@ MENU_CAFE = [
     {"id": "chocolate", "nombre": "Chocolate Caliente", "precio": 9, "emoji": "🍫"},
     {"id": "te", "nombre": "Té Aromático", "precio": 6, "emoji": "🍵"},
     {"id": "frappe", "nombre": "Frappé", "precio": 11, "emoji": "🧋"},
-    {"id": "Sandwich Mixto", "nombre": "Sandwich Mixto", "precio": 14, "emoji": "🥪"},
+    {"id": "sandwich", "nombre": "Sandwich Mixto", "precio": 14, "emoji": "🥪"},
     {"id": "croissant", "nombre": "Croissant", "precio": 9, "emoji": "🥐"},
 ]
 
@@ -46,10 +48,15 @@ class NotaPedidoModal(ui.Modal, title="📝 Nota para el pedido"):
         self.origen = origen
 
     async def on_submit(self, interaction: discord.Interaction):
-        rol = interaction.guild.get_role(MESEROS_ROLE_ID)
+        if self.origen == "Bar":
+            rol = interaction.guild.get_role(BARTENDERS_ROLE_ID)
+            titulo = "🍷 Nuevo pedido del BAR"
+        else:
+            rol = interaction.guild.get_role(MESEROS_ROLE_ID)
+            titulo = "☕ Nuevo pedido del CAFÉ"
 
         mensaje = (
-            f"📢 **Nuevo pedido ({self.origen})**\n\n"
+            f"📢 **{titulo}**\n\n"
             f"{self.producto['emoji']} **Producto:** {self.producto['nombre']}\n"
             f"💰 **Precio:** S/ {self.producto['precio']}\n"
             f"📝 **Nota:** {self.nota.value or 'Sin nota'}\n\n"
@@ -104,14 +111,12 @@ class MenuProductosView(ui.View):
 
 class SelectorMenu(ui.Select):
     def __init__(self):
-        options = [
-            discord.SelectOption(label="Bar", emoji="🍷"),
-            discord.SelectOption(label="Café", emoji="☕"),
-        ]
-
         super().__init__(
             placeholder="📜 ¿Qué menú deseas ver?",
-            options=options
+            options=[
+                discord.SelectOption(label="Bar", emoji="🍷"),
+                discord.SelectOption(label="Café", emoji="☕"),
+            ]
         )
 
     async def callback(self, interaction: discord.Interaction):
