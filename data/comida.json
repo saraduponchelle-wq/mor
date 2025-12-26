@@ -1,31 +1,17 @@
 [
   {
     "categoria": "Comida",
-    "nombre": "Hamburguesa Clásica",
-    "descripcion": "Carne jugosa con queso y vegetales",
-    "precio": 120,
-    "emoji": "🍔"
-  },
-  {
-    "categoria": "Comida",
-    "nombre": "Pizza Personal",
-    "descripcion": "Pizza individual de pepperoni",
-    "precio": 150,
-    "emoji": "🍕"
-  },
-  {
-    "categoria": "Comida",
-    "nombre": "Papas Fritas",
-    "descripcion": "Crujientes y doradas",
-    "precio": 80,
-    "emoji": "🍟"
-  },
-  {
-    "categoria": "Comida",
     "nombre": "Sandwich Mixto",
     "descripcion": "Jamón y queso caliente",
     "precio": 90,
     "emoji": "🥪"
+  },
+  {
+    "categoria": "Comida",
+    "nombre": "Croissant",
+    "descripcion": "Croissant de mantequilla recién horneado",
+    "precio": 85,
+    "emoji": "🥐"
   },
 
   {
@@ -41,13 +27,6 @@
     "descripcion": "Café con espuma de leche",
     "precio": 75,
     "emoji": "☕"
-  },
-  {
-    "categoria": "Bebida",
-    "nombre": "Latte",
-    "descripcion": "Café suave con leche",
-    "precio": 70,
-    "emoji": "🥛"
   },
   {
     "categoria": "Bebida",

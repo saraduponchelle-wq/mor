@@ -122,6 +122,11 @@ async def mostrar_menu_bar(
 
 from menus.comida import menu_group
 
+menu_group = app_commands.Group(
+    name="menu",
+    description="Menús del bar"
+)
+
 @menu_group.command(
     name="bar",
     description="Muestra el menú del bar"
