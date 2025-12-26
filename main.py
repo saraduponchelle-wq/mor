@@ -78,6 +78,7 @@ from menus.comida import menu_group
 
 
 
+
 # from menus.bar import mostrar_menu_bar
 
 # ───────── REGISTRAR SLASH COMMANDS ─────────
