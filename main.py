@@ -74,7 +74,9 @@ from comands.reto import reto
 
 
 # Menús
-from menus.menu import menu
+from menus.menu import menu_group
+
+
 
 
 
@@ -87,7 +89,7 @@ from menus.menu import menu
 # ───────── REGISTRAR SLASH COMMANDS ─────────
 
 bot.tree.add_command(adorar)
-bot.tree.add_command(menu)
+bot.tree.add_command(menu_group)
 bot.tree.add_command(start)
 bot.tree.add_command(reto)
 bot.tree.add_command(orden)
