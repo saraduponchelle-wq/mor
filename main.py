@@ -75,6 +75,8 @@ from comands.reto import reto
 
 # Menús
 from menus.comida import menu_group
+from menus.bar import menu_group
+
 
 
 

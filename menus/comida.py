@@ -1,6 +1,15 @@
 import discord
 from discord import ui, app_commands
 import json
+from discord import app_commands
+import menus.bar  # 👈 solo esto
+
+
+menu_group = app_commands.Group(
+    name="menu",
+    description="Menús del local"
+)
+
 
 # ───────── CONFIG ─────────
 
@@ -120,14 +129,6 @@ async def mostrar_menu_comida(
 
 # ───────── SLASH COMMAND /menu comida ─────────
 
-menu_group = app_commands.Group(
-    name="menu",
-    description="Menús del bar"
-)
-
-@menu_group.command(
-    name="comida",
-    description="Muestra el menú de comida"
-)
-async def menu_comida(interaction: discord.Interaction):
+@menu_group.command(name="comida", description="Menú de comida")
+async def menu_comida(interaction):
     await mostrar_menu_comida(interaction)
