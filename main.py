@@ -4,6 +4,7 @@ from events.reaction_add import handle_reaction_add
 from events.reaction_remove import handle_reaction_remove
 import os
 
+
 # ───────── CONFIG ─────────
 
 INTENTS = discord.Intents.default()
@@ -29,6 +30,9 @@ bot = Bot()
 bot.jugadores = []
 bot.mensaje_registro = None
 bot.NOMBRE_ROL = "Jugador"
+OWNER_ID = 903114752060977202
+bot.silence_mode = False
+
 
 
 # ───────── EVENTOS ─────────
@@ -71,13 +75,25 @@ from comands.girar import girar
 from comands.help import help_cmd
 from comands.orden import orden
 from comands.reto import reto
-
+from comands.silence import silence
+from comands.punition import punition
 
 # Menús
+
 from menus.menu import menu_group
 
 
-
+#silencio
+@bot.event
+async def on_interaction(interaction: discord.Interaction):
+    if bot.silence_mode and interaction.user.id != OWNER_ID:
+        if interaction.type == discord.InteractionType.application_command:
+            await interaction.response.send_message(
+                "🤫 El silencio reina ahora mismo…",
+                ephemeral=True
+            )
+            return
+    await bot.process_application_commands(interaction)
 
 
 
@@ -96,6 +112,8 @@ bot.tree.add_command(orden)
 bot.tree.add_command(girar)
 bot.tree.add_command(end)
 bot.tree.add_command(help_cmd)
+bot.tree.add_command(silence)
+bot.tree.add_command(punition)
 
 
 # ───────── RUN ─────────
