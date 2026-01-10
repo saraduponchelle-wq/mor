@@ -11,7 +11,10 @@ async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member
     overwrite.send_messages = False
     overwrite.add_reactions = False
 
-    await canal.set_permissions(miembro, overwrite=overwrite)
+    try:
+        await canal.set_permissions(miembro, overwrite=overwrite)
+    except discord.Forbidden:
+        await canal.send(f"❌ No puedo silenciar a {miembro.mention}, permisos insuficientes.")
     await asyncio.sleep(segundos)
 
     overwrite.send_messages = None

@@ -95,7 +95,7 @@ async def on_interaction(interaction: discord.Interaction):
                 ephemeral=True
             )
             return
-    await bot.process_application_commands(interaction)
+    # await bot.process_application_commands(interaction)
 
 
 
