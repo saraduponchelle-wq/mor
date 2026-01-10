@@ -101,7 +101,7 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         )
 
         # Silenciar sin volver a enviar embed al terminar
-        await silenciar_en_canal(canal, usuario, duracion, stop_embed=False)
+        await silenciar_en_canal(canal, usuario, duracion, stop_embed=True)
 
 
 
