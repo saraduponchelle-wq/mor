@@ -59,16 +59,34 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
     castigo = random.choice(castigos)
 
     # 🟢 SILENCIO
+    # 🟢 SILENCIO
     if castigo == "silencio":
         duracion = random.randint(10, 30)
-        await silenciar_en_canal(canal, usuario, duracion)
 
+        # Primero enviamos el embed anunciando el castigo
         texto = (
-            f"🤫 {usuario.mention} ha sido silenciado por "
+            f"🤫 {usuario.mention} será silenciado por "
             f"**{duracion} segundos**.\n"
             "La ruleta sonríe."
         )
         gif = "Mor/dislike.gif"
+
+        embed_final = discord.Embed(
+            title="⚖️ Castigo Decidido",
+            description=texto,
+            color=discord.Color.green()
+        )
+        embed_final.set_image(url=f"attachment://{os.path.basename(gif)}")
+
+        await canal.send(
+            content=usuario.mention,
+            embed=embed_final,
+            file=discord.File(gif, filename=os.path.basename(gif))
+        )
+
+        # Después aplicamos el silencio
+        await silenciar_en_canal(canal, usuario, duracion)
+
 
     # 🟡 AVERGONZAR
     elif castigo == "avergonzar":
