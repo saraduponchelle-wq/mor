@@ -10,9 +10,20 @@ async def start(interaction: discord.Interaction):
     bot = interaction.client
     bot.jugadores.clear()
 
+    embed = discord.Embed(
+        title="🎰 ¡Juego de Ruleta Iniciado!",
+        description=(
+            f"{EMOJI_RANDOM} La suerte comienza a girar…\n\n"
+            f"{EMOJI_JIJI} **Reacciona con 🎉 para unirte al juego.**"
+        ),
+        color=discord.Color.red()
+    )
+
+    embed.set_image(url="attachment://anuncio.gif")
+
     await interaction.response.send_message(
-        f"{EMOJI_RANDOM} **¡Juego de Ruleta Iniciado!**\n\n"
-        f"{EMOJI_JIJI} Reacciona con 🎉 para unirte."
+        embed=embed,
+        file=discord.File("Mor/anuncio.gif", filename="anuncio.gif")
     )
 
     bot.mensaje_registro = await interaction.original_response()
@@ -21,5 +32,6 @@ async def start(interaction: discord.Interaction):
     canal = interaction.guild.get_channel(CANAL_NOTICIAS_ID)
     if canal:
         await canal.send(
-            f"@everyone 🎰 **¡La ruleta ha comenzado!**"
+            "@everyone 🎰 **¡La ruleta ha comenzado!**\n"
+            "Ve al canal del juego y participa."
         )
