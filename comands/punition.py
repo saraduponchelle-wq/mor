@@ -8,7 +8,12 @@ import os
 OWNER_ID = 903114752060977202
 
 # 🔇 Silencio real por canal
-async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member, segundos: int):
+# 🔇 Silencio real por canal con "stop" opcional
+async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member, segundos: int, stop_embed: bool = True):
+    """
+    Aplica un silencio temporal a un usuario en el canal.
+    stop_embed: si es True, no hace nada extra al terminar
+    """
     overwrite = canal.overwrites_for(miembro)
     overwrite.send_messages = False
     overwrite.add_reactions = False
@@ -17,11 +22,22 @@ async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member
         await canal.set_permissions(miembro, overwrite=overwrite)
     except discord.Forbidden:
         await canal.send(f"❌ No puedo silenciar a {miembro.mention}, permisos insuficientes.")
+
+    # Espera el tiempo del silencio
     await asyncio.sleep(segundos)
 
+    # Restaurar permisos
     overwrite.send_messages = None
     overwrite.add_reactions = None
-    await canal.set_permissions(miembro, overwrite=overwrite)
+    try:
+        await canal.set_permissions(miembro, overwrite=overwrite)
+    except discord.Forbidden:
+        pass
+
+    # Si quieres enviar un embed al finalizar, puedes usar stop_embed=False para no hacerlo
+    if not stop_embed:
+        return
+
 
 
 @app_commands.command(name="punition", description="La ruleta decide el castigo")
@@ -63,7 +79,7 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
     if castigo == "silencio":
         duracion = random.randint(10, 30)
 
-        # Primero enviamos el embed anunciando el castigo
+        # Embed antes de silenciar
         texto = (
             f"🤫 {usuario.mention} será silenciado por "
             f"**{duracion} segundos**.\n"
@@ -84,8 +100,9 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
             file=discord.File(gif, filename=os.path.basename(gif))
         )
 
-        # Después aplicamos el silencio
-        await silenciar_en_canal(canal, usuario, duracion)
+        # Silenciar sin volver a enviar embed al terminar
+        await silenciar_en_canal(canal, usuario, duracion, stop_embed=False)
+
 
 
     # 🟡 AVERGONZAR
