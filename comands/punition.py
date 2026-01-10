@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 import random
 import asyncio
+import os
+
 
 OWNER_ID = 903114752060977202
 
