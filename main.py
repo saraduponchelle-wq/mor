@@ -77,6 +77,8 @@ from comands.orden import orden
 from comands.reto import reto
 from comands.silence import silence
 from comands.punition import punition
+from comands.kiss import beso
+
 
 # Menús
 
@@ -114,6 +116,8 @@ bot.tree.add_command(end)
 bot.tree.add_command(help_cmd)
 bot.tree.add_command(silence)
 bot.tree.add_command(punition)
+bot.tree.add_command(beso)
+
 
 
 # ───────── RUN ─────────

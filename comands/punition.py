@@ -5,7 +5,6 @@ import asyncio
 
 OWNER_ID = 903114752060977202
 
-
 # 🔇 Silencio real por canal
 async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member, segundos: int):
     overwrite = canal.overwrites_for(miembro)
@@ -22,8 +21,7 @@ async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member
 
 @app_commands.command(name="punition", description="La ruleta decide el castigo")
 async def punition(interaction: discord.Interaction, usuario: discord.Member):
-
-    # 👑 Solo tú
+    # 👑 Solo el dueño
     if interaction.user.id != OWNER_ID:
         await interaction.response.send_message(
             "❌ No tienes autoridad para castigar.",
@@ -58,7 +56,6 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
     # 🟢 SILENCIO
     if castigo == "silencio":
         duracion = random.randint(10, 30)
-
         await silenciar_en_canal(canal, usuario, duracion)
 
         texto = (
@@ -83,6 +80,7 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         texto = f"💀 {usuario.mention} fue **expulsado del servidor** por decisión de la ruleta."
         gif = "Mor/castigo.gif"
 
+        # 📢 ANUNCIO EN EL SERVIDOR (ANTES DEL KICK)
         embed_final = discord.Embed(
             title="⚖️ Castigo Ejecutado",
             description=texto,
@@ -90,7 +88,6 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         )
         embed_final.set_image(url="attachment://castigo.gif")
 
-        # 📢 ANUNCIO EN EL SERVIDOR (ANTES DEL KICK)
         await canal.send(
             content=usuario.mention,
             embed=embed_final,
@@ -108,6 +105,18 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
 
         # 💀 KICK FINAL
         await guild.kick(usuario, reason="Castigo decidido por la ruleta")
-        return
+        return  # ✅ Aquí solo return, sin paréntesis extra
 
-        )
+    # ✨ Enviar embed para silencio o avergonzar
+    embed_final = discord.Embed(
+        title="⚖️ Castigo Decidido",
+        description=texto,
+        color=discord.Color.orange() if castigo == "avergonzar" else discord.Color.green()
+    )
+    embed_final.set_image(url=f"attachment://{os.path.basename(gif)}")
+
+    await canal.send(
+        content=usuario.mention,
+        embed=embed_final,
+        file=discord.File(gif, filename=os.path.basename(gif))
+    )
