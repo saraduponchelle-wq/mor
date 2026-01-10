@@ -80,6 +80,24 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
     else:
         invite = await canal.create_invite(max_uses=1, unique=True)
 
+        texto = f"💀 {usuario.mention} fue **expulsado del servidor** por decisión de la ruleta."
+        gif = "Mor/castigo.gif"
+
+        embed_final = discord.Embed(
+            title="⚖️ Castigo Ejecutado",
+            description=texto,
+            color=discord.Color.dark_red()
+        )
+        embed_final.set_image(url="attachment://castigo.gif")
+
+        # 📢 ANUNCIO EN EL SERVIDOR (ANTES DEL KICK)
+        await canal.send(
+            content=usuario.mention,
+            embed=embed_final,
+            file=discord.File(gif, filename="castigo.gif")
+        )
+
+        # 📩 MD
         try:
             await usuario.send(
                 "💀 Has sido expulsado por decisión de la ruleta.\n"
@@ -88,21 +106,8 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         except:
             pass
 
+        # 💀 KICK FINAL
         await guild.kick(usuario, reason="Castigo decidido por la ruleta")
+        return
 
-        texto = f"💀 {usuario.mention} fue **expulsado del servidor**."
-        gif = "Mor/castigo.gif"
-
-    # 📢 MENSAJE FINAL
-    embed_final = discord.Embed(
-        title="⚖️ Castigo Ejecutado",
-        description=texto,
-        color=discord.Color.dark_red()
-    )
-    embed_final.set_image(url="attachment://castigo.gif")
-
-    await canal.send(
-        content=usuario.mention,
-        embed=embed_final,
-        file=discord.File(gif, filename="castigo.gif")
-    )
+        )
