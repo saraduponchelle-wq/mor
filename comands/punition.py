@@ -2,21 +2,19 @@ import discord
 from discord import app_commands
 import random
 import asyncio
-import asyncio
-import discord
+
 OWNER_ID = 903114752060977202
 
 
+# 🔇 Silencio real por canal
 async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member, segundos: int):
     overwrite = canal.overwrites_for(miembro)
     overwrite.send_messages = False
     overwrite.add_reactions = False
 
     await canal.set_permissions(miembro, overwrite=overwrite)
-
     await asyncio.sleep(segundos)
 
-    # Restaurar permisos
     overwrite.send_messages = None
     overwrite.add_reactions = None
     await canal.set_permissions(miembro, overwrite=overwrite)
@@ -24,6 +22,8 @@ async def silenciar_en_canal(canal: discord.TextChannel, miembro: discord.Member
 
 @app_commands.command(name="punition", description="La ruleta decide el castigo")
 async def punition(interaction: discord.Interaction, usuario: discord.Member):
+
+    # 👑 Solo tú
     if interaction.user.id != OWNER_ID:
         await interaction.response.send_message(
             "❌ No tienes autoridad para castigar.",
@@ -31,12 +31,13 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         )
         return
 
+    canal = interaction.channel
     guild = interaction.guild
 
-    # 🎰 EMBED DE RULETA
+    # 🎰 EMBED RULETA
     embed_ruleta = discord.Embed(
         title="🎰 Girando la ruleta del castigo...",
-        description="El destino se decide ahora.",
+        description="El destino está decidiendo su suerte.",
         color=discord.Color.red()
     )
     embed_ruleta.set_image(url="attachment://ruleta.gif")
@@ -50,35 +51,32 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
     await asyncio.sleep(4)
     await mensaje_ruleta.delete()
 
-    # 🎯 CASTIGOS DISPONIBLES
-    castigos = [
-        "silencio",
-        "expulsion",
-        "avergonzar"
-    ]
-
+    # 🎯 Castigos posibles
+    castigos = ["silencio", "avergonzar", "expulsion"]
     castigo = random.choice(castigos)
 
-    # 🟢 CASTIGOS LEVES
-    elif castigo == "silencio":
-    duracion = random.randint(10, 30)
+    # 🟢 SILENCIO
+    if castigo == "silencio":
+        duracion = random.randint(10, 30)
 
-    await silenciar_en_canal(interaction.channel, usuario, duracion)
+        await silenciar_en_canal(canal, usuario, duracion)
 
-    texto = (
-        f"🤫 {usuario.mention} ha sido silenciado por "
-        f"**{duracion} segundos**.\n"
-        "La ruleta no perdona."
-    )
-    gif = "Mor/dislike.gif"
-
-
-    elif castigo == "avergonzar":
-        texto = f"😈 {usuario.mention} fue señalado por la ruleta. Qué vergüenza."
+        texto = (
+            f"🤫 {usuario.mention} ha sido silenciado por "
+            f"**{duracion} segundos**.\n"
+            "La ruleta sonríe."
+        )
         gif = "Mor/dislike.gif"
 
-    # 🔴 CASTIGO GRAVE
-    # 💀 EXPULSIÓN
+    # 🟡 AVERGONZAR
+    elif castigo == "avergonzar":
+        texto = (
+            f"😈 {usuario.mention} fue señalado por la ruleta.\n"
+            "Las miradas pesan más que el castigo."
+        )
+        gif = "Mor/dislike.gif"
+
+    # 🔴 EXPULSIÓN
     else:
         invite = await canal.create_invite(max_uses=1, unique=True)
 
@@ -90,17 +88,17 @@ async def punition(interaction: discord.Interaction, usuario: discord.Member):
         except:
             pass
 
-        await guild.kick(usuario, reason="Castigo de la ruleta")
+        await guild.kick(usuario, reason="Castigo decidido por la ruleta")
 
         texto = f"💀 {usuario.mention} fue **expulsado del servidor**."
         gif = "Mor/castigo.gif"
 
-    # 📢 MENSAJE FINAL (MISMO CANAL)
+    # 📢 MENSAJE FINAL
     embed_final = discord.Embed(
         title="⚖️ Castigo Ejecutado",
         description=texto,
         color=discord.Color.dark_red()
-    )    
+    )
     embed_final.set_image(url="attachment://castigo.gif")
 
     await canal.send(
