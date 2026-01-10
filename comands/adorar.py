@@ -9,13 +9,16 @@ MOR_ID = 903114752060977202
 @app_commands.command(name="adorar", description="Honrar a Mor")
 async def adorar(interaction: discord.Interaction):
 
+    # ⏳ Confirmar interacción inmediatamente
+    await interaction.response.defer()
+
     gifs = ["love.gif", "beauty.gif"]
     elegido = random.choice(gifs)
 
     ruta_gif = f"Mor/{elegido}"
 
     if not os.path.exists(ruta_gif):
-        await interaction.response.send_message("❌ El ritual falló… no hay ofrenda.")
+        await interaction.followup.send("❌ El ritual falló… no hay ofrenda.")
         return
 
     # 💗 LOVE.GIF
@@ -23,22 +26,21 @@ async def adorar(interaction: discord.Interaction):
         embed = discord.Embed(
             title="💖 Un acto de devoción absoluta 💖",
             description=(
-                f"{EMOJI_JIJI} *Ohhh~ qué escena tan preciosa…*\n\n"
+                f"{EMOJI_JIJI} *Ohhh~ qué escena tan adorable…*\n\n"
                 f"El amor se desborda, los corazones tiemblan y **Mor** recibe "
-                f"otra ofrenda digna de admiración eterna.\n\n"
+                f"una ofrenda digna de admiración eterna.\n\n"
                 f"<@{MOR_ID}> ✨"
             ),
-            color=discord.Color.from_rgb(255, 105, 180)  # Rosa intenso
+            color=discord.Color.from_rgb(255, 105, 180)
         )
 
         embed.set_image(url="attachment://love.gif")
 
-        await interaction.response.send_message(
+        mensaje = await interaction.followup.send(
             embed=embed,
-            file=discord.File(ruta_gif, filename="love.gif")
+            file=discord.File(ruta_gif, filename="love.gif"),
+            wait=True
         )
-
-        mensaje = await interaction.original_response()
 
         # Reacciones estilo Sparkle
         for emoji in ["💖", "💝", "🎁", "✨"]:
@@ -59,12 +61,11 @@ async def adorar(interaction: discord.Interaction):
 
         embed.set_image(url="attachment://beauty.gif")
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             embed=embed,
             file=discord.File(ruta_gif, filename="beauty.gif")
         )
 
-        # Enviar canción después
         await interaction.followup.send(
             file=discord.File("Mor/song.mp3")
         )
