@@ -2,7 +2,6 @@ import discord
 from discord import app_commands
 from config import SALONP_FORUM_ID
 from database.db import conn, cursor
-from commands.salonp import salonp_group
 
 
 @salonp_group.command(
