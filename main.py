@@ -78,6 +78,9 @@ from comands.reto import reto
 from comands.silence import silence
 from comands.punition import punition
 from comands.kiss import beso
+from comands.join import join
+from comands.kick import kick
+
 
 
 # Menús
@@ -117,6 +120,9 @@ bot.tree.add_command(help_cmd)
 bot.tree.add_command(silence)
 bot.tree.add_command(punition)
 bot.tree.add_command(beso)
+bot.tree.add_command(join)
+bot.tree.add_command(kick)
+
 
 
 
