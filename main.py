@@ -94,7 +94,7 @@ from comands.salonp.eliminate import salonp_eliminate
 
 # Menús
 
-from menus.menu import menu_group
+from comands.salonp import salonp_create, salonp_invite, salonp_eliminate
 
 
 #silencio
@@ -134,9 +134,12 @@ bot.tree.add_command(kick)
 
 
 # Registrar
+
+# registrar comandos
 bot.tree.add_command(salonp_create)
 bot.tree.add_command(salonp_invite)
 bot.tree.add_command(salonp_eliminate)
+
 
 
 

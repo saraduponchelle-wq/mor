@@ -1,7 +1,10 @@
 
-from .create import create_command
-from .invite import invite_command
-from .eliminate import eliminate_command
+# comands/salonp/__init__.py
+
+from .create import salonp_create
+from .invite import salonp_invite
+from .eliminate import salonp_eliminate
+
 from discord import app_commands
 
 # Grupo de comandos
