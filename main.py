@@ -93,7 +93,7 @@ from comands.salonp import salonp_group
 
 
 # Menús
-
+from menus.menu import menu_group
 from comands.salonp import salonp_create, salonp_invite, salonp_eliminate
 
 
