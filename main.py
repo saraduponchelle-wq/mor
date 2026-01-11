@@ -2,6 +2,7 @@ import discord
 from discord import app_commands
 from events.reaction_add import handle_reaction_add
 from events.reaction_remove import handle_reaction_remove
+from database.db import setup_db
 import os
 
 
@@ -39,6 +40,7 @@ bot.silence_mode = False
 
 @bot.event
 async def on_ready():
+    setup_db()
     print(f"🤖 Bot conectado como {bot.user}")
 
 @bot.event
@@ -80,8 +82,7 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-
-
+from commands.salonp import salonp_group
 
 # Menús
 
@@ -122,6 +123,7 @@ bot.tree.add_command(punition)
 bot.tree.add_command(beso)
 bot.tree.add_command(join)
 bot.tree.add_command(kick)
+bot.tree.add_command(salonp_group)
 
 
 

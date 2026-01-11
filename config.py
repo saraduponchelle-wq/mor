@@ -1,0 +1,2 @@
+SALONP_FORUM_ID = 1460035063885463696
+ADMIN_PERMISSIONS = discord.Permissions(administrator=True)
