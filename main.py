@@ -82,10 +82,12 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-from comands.salonp import salonp_group
 from comands.salonp.create import salonp_create
 from comands.salonp.invite import salonp_invite
 from comands.salonp.eliminate import salonp_eliminate
+
+# Luego registrarlos en tu bot
+
 
 
 
@@ -135,6 +137,7 @@ bot.tree.add_command(kick)
 bot.tree.add_command(salonp_create)
 bot.tree.add_command(salonp_invite)
 bot.tree.add_command(salonp_eliminate)
+
 
 
 

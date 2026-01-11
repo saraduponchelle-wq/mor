@@ -16,16 +16,19 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         )
         return
 
+    # 🔍 Crear thread privado
     thread = await forum.create_thread(
         name=nombre,
         type=discord.ChannelType.private_thread
     )
 
+    # 🔒 Permisos: dueño + administradores
     await thread.add_user(interaction.user)
     for member in guild.members:
         if member.guild_permissions.administrator:
             await thread.add_user(member)
 
+    # 💾 Guardar en DB
     cursor.execute(
         "INSERT INTO salonp (thread_id, owner_id) VALUES (?, ?)",
         (thread.id, interaction.user.id)
@@ -42,6 +45,6 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
     )
 
     await thread.send(
-        f"👋 Bienvenido {interaction.user.mention}\n"
-        "Usa `/salonp_invite @usuario` para invitar."
+        f"👋 Bienvenido {interaction.user.mention}!\n"
+        "Usa `/salonp_invite @usuario` para invitar a alguien."
     )
