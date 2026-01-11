@@ -1,73 +1,49 @@
 import discord
 from discord import app_commands
 from database.db import conn, cursor
-from commands.salonp import salonp_group
 
+async def salonp_invite(interaction: discord.Interaction, usuario: discord.Member):
+    guild = interaction.guild
+    thread = interaction.channel
 
-@salonp_group.command(
-    name="invite",
-    description="Invita a un usuario a tu salón privado"
-)
-async def salonp_invite(
-    interaction: discord.Interaction,
-    usuario: discord.Member
-):
-    canal = interaction.channel
-
-    # ❌ Debe ser un thread
-    if not isinstance(canal, discord.Thread):
+    # 🔍 Verificar que sea un thread en nuestra DB
+    cursor.execute("SELECT owner_id FROM salonp WHERE thread_id = ?", (thread.id,))
+    result = cursor.fetchone()
+    if not result:
         await interaction.response.send_message(
-            "❌ Este comando solo puede usarse dentro de un salón.",
+            "❌ Este canal no es un salón registrado.",
             ephemeral=True
         )
         return
 
-    # 🔍 Verificar que es un salón registrado
-    cursor.execute(
-        "SELECT owner_id FROM salonp WHERE thread_id = ?",
-        (canal.id,)
-    )
-    data = cursor.fetchone()
+    owner_id = result[0]
 
-    if not data:
-        await interaction.response.send_message(
-            "❌ Este canal no es un salón privado.",
-            ephemeral=True
-        )
-        return
-
-    owner_id = data[0]
-
-    # 👑 Solo owner o admin
+    # Solo el dueño o admins pueden invitar
     if interaction.user.id != owner_id and not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message(
-            "❌ No tienes permiso para invitar usuarios.",
+            "❌ No tienes permisos para invitar a este salón.",
             ephemeral=True
         )
         return
 
-    # 🚫 Ya está dentro
-    cursor.execute(
-        "SELECT 1 FROM salonp_members WHERE thread_id = ? AND user_id = ?",
-        (canal.id, usuario.id)
-    )
-    if cursor.fetchone():
-        await interaction.response.send_message(
-            "⚠️ Ese usuario ya está en el salón.",
-            ephemeral=True
-        )
-        return
-
-    # ➕ Añadir al thread
-    await canal.add_user(usuario)
+    # 🔒 Dar acceso al usuario
+    await thread.add_user(usuario)
 
     # 💾 Guardar en DB
     cursor.execute(
-        "INSERT INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
-        (canal.id, usuario.id)
+        "INSERT OR IGNORE INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
+        (thread.id, usuario.id)
     )
     conn.commit()
 
     await interaction.response.send_message(
-        f"✅ {usuario.mention} fue invitado al salón."
+        f"✅ {usuario.mention} ahora puede acceder al salón.",
+        ephemeral=True
     )
+
+# 🌟 Crear comando
+invite_command = app_commands.Command(
+    name="invite",
+    description="Invita a alguien a tu salón privado",
+    callback=salonp_invite
+)
