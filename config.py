@@ -1,2 +1,6 @@
+import discord  # 👈 ESTA LÍNEA FALTABA
+
 SALONP_FORUM_ID = 1460035063885463696
+OWNER_ID = 903114752060977202
+
 ADMIN_PERMISSIONS = discord.Permissions(administrator=True)
