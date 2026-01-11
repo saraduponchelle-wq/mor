@@ -82,7 +82,7 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-from commands.salonp import salonp_group
+from comands.salonp import salonp_group
 
 # Menús
 
