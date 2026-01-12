@@ -1,9 +1,12 @@
 import discord
-from discord.ext import commands
+from discord import app_commands
 
-@commands.has_permissions(administrator=True)
-@commands.command(name="embed")
-async def embed_anuncio(ctx: commands.Context):
+@app_commands.command(
+    name="embed",
+    description="Muestra el anuncio de novedades del bot"
+)
+@app_commands.checks.has_permissions(administrator=True)
+async def embed_anuncio(interaction: discord.Interaction):
 
     # ==========================
     # EMBED 1 — RULETA
@@ -21,13 +24,13 @@ async def embed_anuncio(ctx: commands.Context):
     embed_ruleta.add_field(
         name="🆕 Comandos añadidos",
         value=(
-            "• `/ruleta join` → Unirte a la ruleta\n"
-            "• `/ruleta kick` → Salir de la ruleta"
+            "• `/ruleta join`\n"
+            "• `/ruleta kick`"
         ),
         inline=False
     )
 
-    await ctx.send(embed=embed_ruleta)
+    await interaction.response.send_message(embed=embed_ruleta)
 
     # ==========================
     # EMBED 2 — SALONES PRIVADOS
@@ -49,16 +52,11 @@ async def embed_anuncio(ctx: commands.Context):
         name="📜 Comandos disponibles",
         value=(
             "• `/salonp create`\n"
-            "• `/salonp invite @usuario`\n"
-            "• `/salonp eliminate @usuario`"
+            "• `/salonp invite`\n"
+            "• `/salonp eliminate`"
         ),
         inline=False
     )
 
-    await ctx.send(embed=embed_salonp)
-
-    # ==========================
-    # MENCIÓN FINAL
-    # ==========================
-
-    await ctx.send("@everyone")
+    await interaction.followup.send(embed=embed_salonp)
+    await interaction.followup.send("@everyone")
