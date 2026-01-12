@@ -11,7 +11,7 @@ import psycopg2
 CATEGORY_ID = 1460094093383307304
 
 # Base de datos (Railway)
-DATABASE_URL = os.getenv.get("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
+DATABASE_URL = os.getenv("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
 if not DATABASE_URL:
     raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
 
