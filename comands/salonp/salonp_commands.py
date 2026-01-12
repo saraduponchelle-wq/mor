@@ -3,7 +3,7 @@ from discord import app_commands
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
 print("DATABASE_URL =", DATABASE_URL)
 
 if not DATABASE_URL:
