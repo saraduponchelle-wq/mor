@@ -3,9 +3,16 @@ from discord import app_commands
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+print("ENV VARS:", dict(os.environ))
+DATABASE_URL = (
+    os.environ.get("DATABASE_URL")
+    or os.environ.get("POSTGRES_URL")
+    or os.environ.get("POSTGRESQL_URL")
+)
+
 if not DATABASE_URL:
-    raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
+    raise RuntimeError("No se encontró ninguna URL de base de datos")
+
 
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
