@@ -4,7 +4,7 @@ import psycopg2
 import os
 
 # 🔹 Conexión a PostgreSQL en Railway
-DATABASE_URL = os.environ.get("postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway")  # Railway te da esto automáticamente
+DATABASE_URL = os.environ.get("DATABASE_URL")  # Railway te da esto automáticamente
 conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor()
 
