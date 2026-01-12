@@ -82,7 +82,9 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-from comands.salonp import salonp_group
+from comands.salonp.salonp_commands import salonp_group
+
+
 
 
 
@@ -128,6 +130,7 @@ bot.tree.add_command(beso)
 bot.tree.add_command(join)
 bot.tree.add_command(kick)
 bot.tree.add_command(salonp_group)
+
 
 
 # Registrar

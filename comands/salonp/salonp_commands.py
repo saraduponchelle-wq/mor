@@ -3,168 +3,190 @@ from discord import app_commands
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
-print("DATABASE_URL =", DATABASE_URL)
+# ==========================
+# CONFIGURACIÓN
+# ==========================
 
+# ID de la categoría donde se crearán los salones privados
+CATEGORY_ID = 1460094093383307304
+
+# Base de datos (Railway)
+DATABASE_URL = os.getenv.get("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
 if not DATABASE_URL:
-    raise RuntimeError("No se encontró ninguna URL de base de datos")
+    raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
 
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
 
-# 🔹 ID del foro de los salones privados
-from config import SALONP_FORUM_ID  # solo el ID, no conn ni cursor
+# Crear tablas si no existen
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS salonp (
+    channel_id BIGINT PRIMARY KEY,
+    owner_id BIGINT NOT NULL
+)
+""")
 
-# -------------------
-# COMANDO: Crear salón privado
-# -------------------
-@app_commands.command(
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS salonp_members (
+    channel_id BIGINT,
+    user_id BIGINT,
+    PRIMARY KEY (channel_id, user_id)
+)
+""")
+conn.commit()
+
+# ==========================
+# GRUPO DE COMANDOS
+# ==========================
+
+salonp_group = app_commands.Group(
+    name="salonp",
+    description="Comandos de salones privados"
+)
+
+# ==========================
+# /salonp create
+# ==========================
+
+@salonp_group.command(
     name="create",
-    description="Crea un salón privado en el foro"
+    description="Crea un salón privado"
 )
 async def salonp_create(interaction: discord.Interaction, nombre: str):
     guild = interaction.guild
-    forum = guild.get_channel(SALONP_FORUM_ID)
+    category = guild.get_channel(CATEGORY_ID)
 
-    if not forum:
+    if not category:
         await interaction.response.send_message(
-            "❌ Foro de salones no encontrado.",
+            "❌ Categoría no encontrada.",
             ephemeral=True
         )
         return
 
-    try:
-        # 🔹 Crear thread en el foro
-        thread_created = await forum.create_thread(
-            name=nombre,
-            content=f"👋 {interaction.user.mention} creó este salón privado.",
-            auto_archive_duration=1440
+    overwrites = {
+        guild.default_role: discord.PermissionOverwrite(view_channel=False),
+        interaction.user: discord.PermissionOverwrite(
+            view_channel=True,
+            send_messages=True
         )
+    }
 
-        # ✅ EXTRAER el thread real
-        thread = thread_created.thread
-
-        # 💾 Guardar en DB
-        cursor.execute(
-            """
-            INSERT INTO salonp (thread_id, owner_id)
-            VALUES (%s, %s)
-            """,
-            (thread.id, interaction.user.id)
-        )
-
-        cursor.execute(
-            """
-            INSERT INTO salonp_members (thread_id, user_id)
-            VALUES (%s, %s)
-            """,
-            (thread.id, interaction.user.id)
-        )
-
-        conn.commit()
-
-        # ✅ Respuesta al usuario
-        await interaction.response.send_message(
-            f"🏠 Salón **{nombre}** creado con éxito.",
-            ephemeral=True
-        )
-
-        # 📩 Mensaje dentro del salón
-        await thread.send(
-            f"👋 Bienvenido {interaction.user.mention}\n"
-            "Usa `/salonp invite @usuario` para invitar."
-        )
-
-    except discord.HTTPException as e:
-        if not interaction.response.is_done():
-            await interaction.response.send_message(
-                f"❌ No se pudo crear el salón: {e}",
-                ephemeral=True
-            )
-
-# -------------------
-# COMANDO: Invitar usuario
-# -------------------
-@app_commands.command(
-    name="invite",
-    description="Invita a un usuario a tu salón privado"
-)
-async def salonp_invite(interaction: discord.Interaction, usuario: discord.Member):
-    cursor.execute(
-        "SELECT thread_id FROM salonp WHERE owner_id = %s",
-        (interaction.user.id,)
+    channel = await guild.create_text_channel(
+        name=nombre,
+        category=category,
+        overwrites=overwrites
     )
-    result = cursor.fetchone()
-
-    if not result:
-        await interaction.response.send_message(
-            "❌ No eres dueño de ningún salón privado.",
-            ephemeral=True
-        )
-        return
-
-    thread_id = result[0]
-    thread = interaction.guild.get_thread(thread_id)
-    if not thread:
-        await interaction.response.send_message(
-            "❌ El salón no existe.",
-            ephemeral=True
-        )
-        return
-
-    await thread.add_user(usuario)
 
     cursor.execute(
-        "INSERT INTO salonp_members (thread_id, user_id) VALUES (%s, %s)",
-        (thread_id, usuario.id)
+        "INSERT INTO salonp (channel_id, owner_id) VALUES (%s, %s)",
+        (channel.id, interaction.user.id)
+    )
+    cursor.execute(
+        "INSERT INTO salonp_members (channel_id, user_id) VALUES (%s, %s)",
+        (channel.id, interaction.user.id)
     )
     conn.commit()
 
     await interaction.response.send_message(
-        f"✅ Usuario {usuario.mention} invitado al salón.",
+        f"🏠 Salón **{nombre}** creado correctamente.",
         ephemeral=True
     )
 
+    await channel.send(
+        f"👋 {interaction.user.mention} creó este salón privado.\n"
+        "Usa `/salonp invite @usuario` para invitar."
+    )
 
-# -------------------
-# COMANDO: Eliminar usuario
-# -------------------
-@app_commands.command(
-    name="eliminate",
-    description="Elimina a un usuario de tu salón privado"
+# ==========================
+# /salonp invite
+# ==========================
+
+@salonp_group.command(
+    name="invite",
+    description="Invita a un usuario a tu salón"
 )
-async def salonp_eliminate(interaction: discord.Interaction, usuario: discord.Member):
+async def salonp_invite(interaction: discord.Interaction, usuario: discord.Member):
     cursor.execute(
-        "SELECT thread_id FROM salonp WHERE owner_id = %s",
+        "SELECT channel_id FROM salonp WHERE owner_id = %s",
         (interaction.user.id,)
     )
     result = cursor.fetchone()
 
     if not result:
         await interaction.response.send_message(
-            "❌ No eres dueño de ningún salón privado.",
+            "❌ No eres dueño de ningún salón.",
             ephemeral=True
         )
         return
 
-    thread_id = result[0]
-    thread = interaction.guild.get_thread(thread_id)
-    if not thread:
+    channel_id = result[0]
+    channel = interaction.guild.get_channel(channel_id)
+
+    if not channel:
+        await interaction.response.send_message(
+            "❌ El salón ya no existe.",
+            ephemeral=True
+        )
+        return
+
+    await channel.set_permissions(
+        usuario,
+        view_channel=True,
+        send_messages=True
+    )
+
+    cursor.execute(
+        "INSERT INTO salonp_members (channel_id, user_id) VALUES (%s, %s)",
+        (channel_id, usuario.id)
+    )
+    conn.commit()
+
+    await interaction.response.send_message(
+        f"✅ {usuario.mention} fue invitado al salón.",
+        ephemeral=True
+    )
+
+# ==========================
+# /salonp eliminate
+# ==========================
+
+@salonp_group.command(
+    name="eliminate",
+    description="Elimina a un usuario de tu salón"
+)
+async def salonp_eliminate(interaction: discord.Interaction, usuario: discord.Member):
+    cursor.execute(
+        "SELECT channel_id FROM salonp WHERE owner_id = %s",
+        (interaction.user.id,)
+    )
+    result = cursor.fetchone()
+
+    if not result:
+        await interaction.response.send_message(
+            "❌ No eres dueño de ningún salón.",
+            ephemeral=True
+        )
+        return
+
+    channel_id = result[0]
+    channel = interaction.guild.get_channel(channel_id)
+
+    if not channel:
         await interaction.response.send_message(
             "❌ El salón no existe.",
             ephemeral=True
         )
         return
 
-    await thread.remove_user(usuario)
+    await channel.set_permissions(usuario, overwrite=None)
 
     cursor.execute(
-        "DELETE FROM salonp_members WHERE thread_id = %s AND user_id = %s",
-        (thread_id, usuario.id)
+        "DELETE FROM salonp_members WHERE channel_id=%s AND user_id=%s",
+        (channel_id, usuario.id)
     )
     conn.commit()
 
     await interaction.response.send_message(
-        f"✅ Usuario {usuario.mention} eliminado del salón.",
+        f"🗑 {usuario.mention} fue eliminado del salón.",
         ephemeral=True
     )
