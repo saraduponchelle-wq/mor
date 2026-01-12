@@ -3,13 +3,12 @@ from discord import app_commands
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway")  # <- el nombre exacto de la variable en Railway
+DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
 
-conn = psycopg2.connect(DATABASE_URL, sslmode="require")  # SSL requerido en Railway
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
-
 
 # 🔹 ID del foro de los salones privados
 from config import SALONP_FORUM_ID  # solo el ID, no conn ni cursor
