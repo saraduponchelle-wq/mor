@@ -11,7 +11,8 @@ import psycopg2
 CATEGORY_ID = 1460094093383307304
 
 # Base de datos (Railway)
-DATABASE_URL = os.getenv("DATABASE_URL") or "postgresql://postgres:mDxPNhPIKwMGpAtcZpMAgOZeZQmvDDLh@postgres.railway.internal:5432/railway"
+DATABASE_URL = "postgresql://postgres:mDxPNhPIKwMGpAtcZpMAgOZeZQmvDDLh@postgres.railway.internal:5432/railway"
+
 if not DATABASE_URL:
     raise ValueError("❌ DATABASE_URL no está configurado en Railway")
 
