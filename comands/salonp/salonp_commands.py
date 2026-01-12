@@ -1,13 +1,15 @@
 import discord
 from discord import app_commands
-import sqlite3
-from config import SALONP_FORUM_ID  # Solo necesitamos el ID del foro
+import psycopg2
+import os
 
-# -------------------
-# CONEXIÓN A LA DB
-# -------------------
-conn = sqlite3.connect("database.db")  # Ajusta el nombre de tu DB
+# 🔹 Conexión a PostgreSQL en Railway
+DATABASE_URL = os.environ.get("postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway")  # Railway te da esto automáticamente
+conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor()
+
+# 🔹 ID del foro de los salones privados
+from config import SALONP_FORUM_ID  # solo el ID, no conn ni cursor
 
 # -------------------
 # COMANDO: Crear salón privado
@@ -32,7 +34,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         thread_created = await forum.create_thread(
             name=nombre,
             content=f"👋 {interaction.user.mention} creó este salón privado.",
-            auto_archive_duration=1440
+            auto_archive_duration=1440  # Archivar después de 24h
         )
 
         # 🔹 Obtener ThreadChannel real para poder usar add_user
@@ -46,11 +48,17 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
 
         # 💾 Guardar en DB
         cursor.execute(
-            "INSERT INTO salonp (thread_id, owner_id) VALUES (?, ?)",
+            """
+            INSERT INTO salonp (thread_id, owner_id)
+            VALUES (%s, %s)
+            """,
             (thread.id, interaction.user.id)
         )
         cursor.execute(
-            "INSERT INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
+            """
+            INSERT INTO salonp_members (thread_id, user_id)
+            VALUES (%s, %s)
+            """,
             (thread.id, interaction.user.id)
         )
         conn.commit()
@@ -72,6 +80,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             ephemeral=True
         )
 
+
 # -------------------
 # COMANDO: Invitar usuario
 # -------------------
@@ -81,7 +90,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
 )
 async def salonp_invite(interaction: discord.Interaction, usuario: discord.Member):
     cursor.execute(
-        "SELECT thread_id FROM salonp WHERE owner_id = ?",
+        "SELECT thread_id FROM salonp WHERE owner_id = %s",
         (interaction.user.id,)
     )
     result = cursor.fetchone()
@@ -105,7 +114,7 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
     await thread.add_user(usuario)
 
     cursor.execute(
-        "INSERT INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
+        "INSERT INTO salonp_members (thread_id, user_id) VALUES (%s, %s)",
         (thread_id, usuario.id)
     )
     conn.commit()
@@ -114,6 +123,7 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
         f"✅ Usuario {usuario.mention} invitado al salón.",
         ephemeral=True
     )
+
 
 # -------------------
 # COMANDO: Eliminar usuario
@@ -124,7 +134,7 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
 )
 async def salonp_eliminate(interaction: discord.Interaction, usuario: discord.Member):
     cursor.execute(
-        "SELECT thread_id FROM salonp WHERE owner_id = ?",
+        "SELECT thread_id FROM salonp WHERE owner_id = %s",
         (interaction.user.id,)
     )
     result = cursor.fetchone()
@@ -148,7 +158,7 @@ async def salonp_eliminate(interaction: discord.Interaction, usuario: discord.Me
     await thread.remove_user(usuario)
 
     cursor.execute(
-        "DELETE FROM salonp_members WHERE thread_id = ? AND user_id = ?",
+        "DELETE FROM salonp_members WHERE thread_id = %s AND user_id = %s",
         (thread_id, usuario.id)
     )
     conn.commit()
