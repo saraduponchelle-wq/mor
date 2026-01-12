@@ -34,12 +34,15 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         return
 
     try:
-        # 🔹 Crear el thread (YA es usable)
-        thread = await forum.create_thread(
+        # 🔹 Crear thread en el foro
+        thread_created = await forum.create_thread(
             name=nombre,
             content=f"👋 {interaction.user.mention} creó este salón privado.",
             auto_archive_duration=1440
         )
+
+        # ✅ EXTRAER el thread real
+        thread = thread_created.thread
 
         # 💾 Guardar en DB
         cursor.execute(
@@ -60,13 +63,13 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
 
         conn.commit()
 
-        # ✅ Responder al usuario
+        # ✅ Respuesta al usuario
         await interaction.response.send_message(
             f"🏠 Salón **{nombre}** creado con éxito.",
             ephemeral=True
         )
 
-        # 📩 Mensaje dentro del thread
+        # 📩 Mensaje dentro del salón
         await thread.send(
             f"👋 Bienvenido {interaction.user.mention}\n"
             "Usa `/salonp invite @usuario` para invitar."
