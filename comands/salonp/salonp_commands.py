@@ -1,12 +1,15 @@
 import discord
 from discord import app_commands
-import psycopg2
 import os
+import psycopg2
 
-# 🔹 Conexión a PostgreSQL en Railway
-DATABASE_URL = os.environ.get("DATABASE_URL")  # Railway te da esto automáticamente
-conn = psycopg2.connect(DATABASE_URL)
+DATABASE_URL = os.environ.get("DATABASE_URL")  # <- el nombre exacto de la variable en Railway
+if not DATABASE_URL:
+    raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
+
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")  # SSL requerido en Railway
 cursor = conn.cursor()
+
 
 # 🔹 ID del foro de los salones privados
 from config import SALONP_FORUM_ID  # solo el ID, no conn ni cursor
