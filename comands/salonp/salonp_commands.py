@@ -1,21 +1,8 @@
 import discord
 from discord import app_commands
-from config import SALONP_FORUM_ID
-from database.db import conn, cursor
+from config import SALONP_FORUM_ID, conn, cursor  # Ajusta según tu configuración
 
-@app_commands.command(
-    name="create",
-    description="Crea un salón privado en el foro"
-)
-@app_commands.describe(nombre="Nombre del salón privado")
 async def salonp_create(interaction: discord.Interaction, nombre: str):
-    if not nombre.strip():
-        await interaction.response.send_message(
-            "❌ Debes especificar un nombre válido para el salón.",
-            ephemeral=True
-        )
-        return
-
     guild = interaction.guild
     forum = guild.get_channel(SALONP_FORUM_ID)
 
@@ -27,20 +14,23 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         return
 
     try:
-        # Crear thread con mensaje inicial obligatorio
-        thread = await forum.create_thread(
+        # 🔹 Crear el thread con mensaje inicial
+        thread_created = await forum.create_thread(
             name=nombre,
             content=f"👋 {interaction.user.mention} creó este salón privado.",
-            auto_archive_duration=1440  # Archivar automáticamente en 24h
+            auto_archive_duration=1440  # Archivar después de 24h de inactividad
         )
 
-        # Agregar al creador y administradores
+        # 🔹 Obtener ThreadChannel real para poder usar add_user
+        thread = await guild.fetch_channel(thread_created.id)
+
+        # 🔒 Dar acceso al creador y administradores
         await thread.add_user(interaction.user)
         for member in guild.members:
             if member.guild_permissions.administrator:
                 await thread.add_user(member)
 
-        # Guardar en la base de datos
+        # 💾 Guardar en DB
         cursor.execute(
             "INSERT INTO salonp (thread_id, owner_id) VALUES (?, ?)",
             (thread.id, interaction.user.id)
@@ -56,11 +46,18 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             ephemeral=True
         )
 
+        # Mensaje inicial en el thread
+        await thread.send(
+            f"👋 Bienvenido {interaction.user.mention}\n"
+            "Usa `/salonp invite @usuario` para invitar."
+        )
+
     except discord.HTTPException as e:
         await interaction.response.send_message(
             f"❌ No se pudo crear el salón: {e}",
             ephemeral=True
         )
+
 
 # -------------------
 # COMANDO: Invitar usuario
