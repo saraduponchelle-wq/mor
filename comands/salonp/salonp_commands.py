@@ -9,9 +9,18 @@ from database.db import conn, cursor
 # -------------------
 @app_commands.command(
     name="create",
-    description="Crea un chat privado en el foro"
+    description="Crea un salón privado en el foro"
 )
+@app_commands.describe(nombre="Nombre del salón privado")
 async def salonp_create(interaction: discord.Interaction, nombre: str):
+    # Validar que el nombre no esté vacío
+    if not nombre.strip():
+        await interaction.response.send_message(
+            "❌ Debes especificar un nombre válido para el salón.",
+            ephemeral=True
+        )
+        return
+
     guild = interaction.guild
     forum = guild.get_channel(SALONP_FORUM_ID)
 
@@ -22,38 +31,48 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         )
         return
 
-    # Crear thread privado
-    thread = await forum.create_thread(name=nombre)
+    try:
+        # 🔍 Crear thread privado
+        thread = await forum.create_thread(
+            name=nombre,
+            type=discord.ChannelType.private_thread
+        )
 
-    # Añadir al creador
-    await thread.add_user(interaction.user)
+        # 🔒 Agregar al creador y administradores
+        await thread.add_user(interaction.user)
+        for member in guild.members:
+            if member.guild_permissions.administrator:
+                await thread.add_user(member)
 
-    # Añadir administradores
-    for member in guild.members:
-        if member.guild_permissions.administrator:
-            await thread.add_user(member)
+        # 💾 Guardar en DB
+        cursor.execute(
+            "INSERT INTO salonp (thread_id, owner_id) VALUES (?, ?)",
+            (thread.id, interaction.user.id)
+        )
+        cursor.execute(
+            "INSERT INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
+            (thread.id, interaction.user.id)
+        )
+        conn.commit()
 
-    # Guardar en DB
-    cursor.execute(
-        "INSERT INTO salonp (thread_id, owner_id) VALUES (?, ?)",
-        (thread.id, interaction.user.id)
-    )
-    cursor.execute(
-        "INSERT INTO salonp_members (thread_id, user_id) VALUES (?, ?)",
-        (thread.id, interaction.user.id)
-    )
-    conn.commit()
+        # ✅ Mensaje de éxito al usuario
+        await interaction.response.send_message(
+            f"🏠 Salón **{nombre}** creado con éxito.",
+            ephemeral=True
+        )
 
-    await interaction.response.send_message(
-        f"🏠 Salón **{nombre}** creado con éxito.",
-        ephemeral=True
-    )
+        # 👋 Mensaje de bienvenida en el thread
+        await thread.send(
+            content=f"👋 Bienvenido {interaction.user.mention}!\n"
+                    "Usa `/salonp invite @usuario` para invitar a alguien al salón."
+        )
 
-    await thread.send(
-        f"👋 Bienvenido {interaction.user.mention}\n"
-        "Usa `/salonp invite @usuario` para invitar."
-    )
-
+    except discord.HTTPException as e:
+        # Manejar errores de Discord (p. ej. permisos insuficientes)
+        await interaction.response.send_message(
+            f"❌ No se pudo crear el salón: {e}",
+            ephemeral=True
+        )
 
 # -------------------
 # COMANDO: Invitar usuario
