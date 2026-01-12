@@ -27,9 +27,10 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         return
 
     try:
-        # Crear thread en foro (tipo ya no se usa)
+        # Crear thread con mensaje inicial obligatorio
         thread = await forum.create_thread(
             name=nombre,
+            content=f"👋 {interaction.user.mention} creó este salón privado.",
             auto_archive_duration=1440  # Archivar automáticamente en 24h
         )
 
@@ -55,17 +56,11 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             ephemeral=True
         )
 
-        await thread.send(
-            f"👋 Bienvenido {interaction.user.mention}!\n"
-            "Usa `/salonp invite @usuario` para invitar a alguien al salón."
-        )
-
     except discord.HTTPException as e:
         await interaction.response.send_message(
             f"❌ No se pudo crear el salón: {e}",
             ephemeral=True
         )
-
 
 # -------------------
 # COMANDO: Invitar usuario
