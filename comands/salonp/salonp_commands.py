@@ -11,28 +11,33 @@ import psycopg2
 CATEGORY_ID = 1460094093383307304
 
 # Base de datos (Railway)
-DATABASE_URL = os.getenv("DATABASE_URL") or "postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway"
+DATABASE_URL = os.getenv("DATABASE_URL") or "postgresql://postgres:mDxPNhPIKwMGpAtcZpMAgOZeZQmvDDLh@postgres.railway.internal:5432/railway"
 if not DATABASE_URL:
-    raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
+    raise ValueError("❌ DATABASE_URL no está configurado en Railway")
 
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
 
-# Crear tablas si no existen
+# ==========================
+# CREACIÓN DE TABLAS (SIMPLE)
+# ==========================
+
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS salonp (
-    channel_id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    channel_id BIGINT NOT NULL,
     owner_id BIGINT NOT NULL
 )
 """)
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS salonp_members (
-    channel_id BIGINT,
-    user_id BIGINT,
-    PRIMARY KEY (channel_id, user_id)
+    id SERIAL PRIMARY KEY,
+    channel_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL
 )
 """)
+
 conn.commit()
 
 # ==========================
@@ -63,6 +68,18 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         )
         return
 
+    # Verificar si ya tiene un salón
+    cursor.execute(
+        "SELECT channel_id FROM salonp WHERE owner_id=%s",
+        (interaction.user.id,)
+    )
+    if cursor.fetchone():
+        await interaction.response.send_message(
+            "❌ Ya tienes un salón privado.",
+            ephemeral=True
+        )
+        return
+
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(view_channel=False),
         interaction.user: discord.PermissionOverwrite(
@@ -77,6 +94,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         overwrites=overwrites
     )
 
+    # Guardar en DB
     cursor.execute(
         "INSERT INTO salonp (channel_id, owner_id) VALUES (%s, %s)",
         (channel.id, interaction.user.id)
@@ -107,7 +125,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
 )
 async def salonp_invite(interaction: discord.Interaction, usuario: discord.Member):
     cursor.execute(
-        "SELECT channel_id FROM salonp WHERE owner_id = %s",
+        "SELECT channel_id FROM salonp WHERE owner_id=%s",
         (interaction.user.id,)
     )
     result = cursor.fetchone()
@@ -125,6 +143,18 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
     if not channel:
         await interaction.response.send_message(
             "❌ El salón ya no existe.",
+            ephemeral=True
+        )
+        return
+
+    # Evitar duplicados
+    cursor.execute(
+        "SELECT 1 FROM salonp_members WHERE channel_id=%s AND user_id=%s",
+        (channel_id, usuario.id)
+    )
+    if cursor.fetchone():
+        await interaction.response.send_message(
+            "⚠️ Ese usuario ya está en el salón.",
             ephemeral=True
         )
         return
@@ -156,7 +186,7 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
 )
 async def salonp_eliminate(interaction: discord.Interaction, usuario: discord.Member):
     cursor.execute(
-        "SELECT channel_id FROM salonp WHERE owner_id = %s",
+        "SELECT channel_id FROM salonp WHERE owner_id=%s",
         (interaction.user.id,)
     )
     result = cursor.fetchone()
