@@ -3,7 +3,7 @@ from discord import app_commands
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL")  # <- el nombre exacto de la variable en Railway
+DATABASE_URL = os.environ.get("postgresql://postgres:uMUCKNQoaeGONQYCeEWBfyUvqzHvVeLs@postgres.railway.internal:5432/railway")  # <- el nombre exacto de la variable en Railway
 if not DATABASE_URL:
     raise ValueError("❌ La variable de entorno DATABASE_URL no está configurada")
 
