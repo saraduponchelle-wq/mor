@@ -34,21 +34,12 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         return
 
     try:
-        # 🔹 Crear el thread con mensaje inicial
-        thread_created = await forum.create_thread(
+        # 🔹 Crear el thread (YA es usable)
+        thread = await forum.create_thread(
             name=nombre,
             content=f"👋 {interaction.user.mention} creó este salón privado.",
-            auto_archive_duration=1440  # Archivar después de 24h
+            auto_archive_duration=1440
         )
-
-        # 🔹 Obtener ThreadChannel real para poder usar add_user
-        thread = await guild.fetch_channel(thread_created.id)
-
-        # 🔒 Dar acceso al creador y administradores
-        await thread.add_user(interaction.user)
-        for member in guild.members:
-            if member.guild_permissions.administrator:
-                await thread.add_user(member)
 
         # 💾 Guardar en DB
         cursor.execute(
@@ -58,6 +49,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             """,
             (thread.id, interaction.user.id)
         )
+
         cursor.execute(
             """
             INSERT INTO salonp_members (thread_id, user_id)
@@ -65,25 +57,27 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             """,
             (thread.id, interaction.user.id)
         )
+
         conn.commit()
 
+        # ✅ Responder al usuario
         await interaction.response.send_message(
             f"🏠 Salón **{nombre}** creado con éxito.",
             ephemeral=True
         )
 
-        # Mensaje inicial en el thread
+        # 📩 Mensaje dentro del thread
         await thread.send(
             f"👋 Bienvenido {interaction.user.mention}\n"
             "Usa `/salonp invite @usuario` para invitar."
         )
 
     except discord.HTTPException as e:
-        await interaction.response.send_message(
-            f"❌ No se pudo crear el salón: {e}",
-            ephemeral=True
-        )
-
+        if not interaction.response.is_done():
+            await interaction.response.send_message(
+                f"❌ No se pudo crear el salón: {e}",
+                ephemeral=True
+            )
 
 # -------------------
 # COMANDO: Invitar usuario
