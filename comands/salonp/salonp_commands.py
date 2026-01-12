@@ -1,7 +1,21 @@
 import discord
 from discord import app_commands
-from config import SALONP_FORUM_ID, conn, cursor  # Ajusta según tu configuración
+import sqlite3
+from config import SALONP_FORUM_ID  # Solo necesitamos el ID del foro
 
+# -------------------
+# CONEXIÓN A LA DB
+# -------------------
+conn = sqlite3.connect("database.db")  # Ajusta el nombre de tu DB
+cursor = conn.cursor()
+
+# -------------------
+# COMANDO: Crear salón privado
+# -------------------
+@app_commands.command(
+    name="create",
+    description="Crea un salón privado en el foro"
+)
 async def salonp_create(interaction: discord.Interaction, nombre: str):
     guild = interaction.guild
     forum = guild.get_channel(SALONP_FORUM_ID)
@@ -18,7 +32,7 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
         thread_created = await forum.create_thread(
             name=nombre,
             content=f"👋 {interaction.user.mention} creó este salón privado.",
-            auto_archive_duration=1440  # Archivar después de 24h de inactividad
+            auto_archive_duration=1440
         )
 
         # 🔹 Obtener ThreadChannel real para poder usar add_user
@@ -57,7 +71,6 @@ async def salonp_create(interaction: discord.Interaction, nombre: str):
             f"❌ No se pudo crear el salón: {e}",
             ephemeral=True
         )
-
 
 # -------------------
 # COMANDO: Invitar usuario
@@ -101,7 +114,6 @@ async def salonp_invite(interaction: discord.Interaction, usuario: discord.Membe
         f"✅ Usuario {usuario.mention} invitado al salón.",
         ephemeral=True
     )
-
 
 # -------------------
 # COMANDO: Eliminar usuario
