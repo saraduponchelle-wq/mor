@@ -82,7 +82,33 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-from comands.salonp import salonp_group
+from comands.salonp.salonp_commands import salonp_create, salonp_invite, salonp_eliminate
+
+# Registrar comandos
+bot.tree.add_command(
+    app_commands.Command(
+        name="salonp_create",
+        description="Crea un salón privado en el foro",
+        callback=salonp_create
+    )
+)
+
+bot.tree.add_command(
+    app_commands.Command(
+        name="salonp_invite",
+        description="Invita a alguien a tu salón privado",
+        callback=salonp_invite
+    )
+)
+
+bot.tree.add_command(
+    app_commands.Command(
+        name="salonp_eliminate",
+        description="Elimina tu salón privado",
+        callback=salonp_eliminate
+    )
+)
+
 
 
 
@@ -136,7 +162,7 @@ bot.tree.add_command(kick)
 # Registrar
 
 # registrar comandos
-bot.tree.add_command(salonp_group)
+
 
 
 
