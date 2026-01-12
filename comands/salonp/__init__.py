@@ -1,9 +1,9 @@
 # comands/salonp/__init__.py
 
 from discord import app_commands
-from .create import salonp_create
-from .invite import salonp_invite
-from .eliminate import salonp_eliminate
+# comands/salonp/__init__.py
+from .salonp_commands import salonp_create, salonp_invite, salonp_eliminate
+
 
 # GRUPO DE COMANDOS
 salonp_group = app_commands.Group(

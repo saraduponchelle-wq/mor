@@ -82,7 +82,8 @@ from comands.punition import punition
 from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
-from comands.salonp.salonp_commands import salonp_create, salonp_invite, salonp_eliminate
+from comands.salonp import salonp_create, salonp_invite, salonp_eliminate
+
 
 # Registrar comandos
 bot.tree.add_command(
