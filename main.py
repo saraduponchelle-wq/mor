@@ -83,9 +83,7 @@ from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
 from comands.salonp.salonp_commands import salonp_group
-
-
-
+from comands.embed import embed_anuncio
 
 
 # Luego registrarlos en tu bot
@@ -130,6 +128,7 @@ bot.tree.add_command(beso)
 bot.tree.add_command(join)
 bot.tree.add_command(kick)
 bot.tree.add_command(salonp_group)
+bot.tree.add_command(embed_anuncio)
 
 
 
