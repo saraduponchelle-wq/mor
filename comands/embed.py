@@ -1,62 +1,100 @@
 import discord
 from discord import app_commands
+import os
 
 @app_commands.command(
     name="embed",
-    description="Muestra el anuncio de novedades del bot"
+    description="Publica el anuncio del evento de Minecraft"
 )
 @app_commands.checks.has_permissions(administrator=True)
 async def embed_anuncio(interaction: discord.Interaction):
 
-    # ==========================
-    # EMBED 1 — RULETA
-    # ==========================
-
-    embed_ruleta = discord.Embed(
-        title="🎰 Nuevos comandos de la ruleta",
+    embed = discord.Embed(
+        title="⛏️🏰 EVENTO DE MINECRAFT – CONSTRUCCIÓN EN EQUIPO 🏰⛏️",
         description=(
-            "¡Hoy se integraron **nuevas funciones** para la ruleta!\n\n"
-            "Ahora puedes **unirte o salir fácilmente** usando los nuevos comandos:"
+            "**¡Tenemos grandes noticias! 🎉**\n"
+            "Recientemente hemos abierto el servidor de Minecraft, y para celebrarlo "
+            "traemos un evento especial donde la creatividad y el trabajo en equipo serán la clave."
         ),
-        color=discord.Color.red()
+        color=discord.Color.dark_green()
     )
 
-    embed_ruleta.add_field(
-        name="🆕 Comandos añadidos",
+    embed.add_field(
+        name="🧱 OBJETIVO DEL EVENTO",
         value=(
-            "• `/ruleta join`\n"
-            "• `/ruleta kick`"
+            "El objetivo es **crear la mejor base de Minecraft** antes del **próximo domingo**.\n"
+            "Pueden participar **solos o en grupo**, planear juntos y construir la base que más impresione."
         ),
         inline=False
     )
 
-    await interaction.response.send_message(embed=embed_ruleta)
-
-    # ==========================
-    # EMBED 2 — SALONES PRIVADOS
-    # ==========================
-
-    embed_salonp = discord.Embed(
-        title="🏠 Nueva modalidad: Salones Privados",
-        description=(
-            "Ahora puedes **crear grupos privados fácilmente** para rol.\n\n"
-            "Son ideales para usar **Tupperbox**, cambiar de perfil "
-            "y tener una experiencia de rol más inmersiva.\n\n"
-            "Los salones son **privados**: solo los miembros pueden verlos.\n"
-            "Los **admins** pueden supervisar lo que ocurre."
-        ),
-        color=discord.Color.blurple()
-    )
-
-    embed_salonp.add_field(
-        name="📜 Comandos disponibles",
+    embed.add_field(
+        name="👨‍⚖️ EVALUACIÓN",
         value=(
-            "• `/salonp create`\n"
-            "• `/salonp invite`\n"
-            "• `/salonp eliminate`"
+            "El **domingo**, un **jurado** evaluará cada base teniendo en cuenta:\n"
+            "• Creatividad\n"
+            "• Diseño\n"
+            "• Detalles\n"
+            "• Trabajo en equipo\n\n"
+            "De ahí saldrán los ganadores 🏆"
         ),
         inline=False
     )
 
-    await interaction.followup.send(embed=embed_salonp)
+    embed.add_field(
+        name="🎁 PREMIOS",
+        value=(
+            "🥇 **Primer lugar**\n"
+            "• 1 mes de **Discord Nitro** *(solo 1 persona del equipo)*\n"
+            "• Rol de **Primer Lugar**\n\n"
+            "🥈 **Segundo lugar**\n"
+            "• **Marco de la tienda** *(solo 1 persona del equipo)*\n"
+            "• Rol de **Segundo Lugar**\n\n"
+            "🥉 **Tercer lugar**\n"
+            "• Rol de **Tercer Lugar**"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="⚠️ IMPORTANTE",
+        value=(
+            "Si el equipo ganador tiene varios integrantes, **solo una persona podrá recibir "
+            "el Nitro o el marco**.\n"
+            "Los **roles** se otorgarán según el puesto obtenido."
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="📅 FECHA LÍMITE",
+        value=(
+            "Tienen hasta el **domingo** para terminar su base.\n"
+            "Ese mismo día se realizará la evaluación y se anunciarán los ganadores."
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="🎮 ACCESO AL SERVIDOR DE MINECRAFT",
+        value=(
+            "Pueden conseguir el **rol de Minecraft** para tener acceso al canal correspondiente "
+            "**yendo al chat de roles**."
+        ),
+        inline=False
+    )
+
+    embed.set_footer(text="✨ Patrocinado por Mor ✨")
+
+    # Responder primero (obligatorio en slash)
+    await interaction.response.send_message(embed=embed)
+
+    # Enviar el GIF
+    gif_path = "data/embed.gif"
+    if os.path.exists(gif_path):
+        await interaction.followup.send(file=discord.File(gif_path))
+    else:
+        await interaction.followup.send("⚠️ No se encontró el GIF del evento.")
+
+    # @everyone
     await interaction.followup.send("@everyone")
