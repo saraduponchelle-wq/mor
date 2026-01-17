@@ -9,6 +9,9 @@ import os
 @app_commands.checks.has_permissions(administrator=True)
 async def embed_anuncio(interaction: discord.Interaction):
 
+    # ⏳ IMPORTANTE: deferir la interacción
+    await interaction.response.defer()
+
     embed = discord.Embed(
         title="⛏️🏰 EVENTO DE MINECRAFT – CONSTRUCCIÓN EN EQUIPO 🏰⛏️",
         description=(
@@ -59,8 +62,8 @@ async def embed_anuncio(interaction: discord.Interaction):
     embed.add_field(
         name="⚠️ IMPORTANTE",
         value=(
-            "Si el equipo ganador tiene varios integrantes, **solo una persona podrá recibir "
-            "el Nitro o el marco**.\n"
+            "Si el equipo ganador tiene varios integrantes, "
+            "**solo una persona podrá recibir el Nitro o el marco**.\n"
             "Los **roles** se otorgarán según el puesto obtenido."
         ),
         inline=False
@@ -88,15 +91,14 @@ async def embed_anuncio(interaction: discord.Interaction):
 
     gif_path = "data/embed.gif"
 
-    # RESPUESTA ÚNICA
     if os.path.exists(gif_path):
-        await interaction.response.send_message(
+        await interaction.followup.send(
             content="@everyone",
             embed=embed,
             file=discord.File(gif_path)
         )
     else:
-        await interaction.response.send_message(
+        await interaction.followup.send(
             content="@everyone\n⚠️ No se encontró el GIF del evento.",
             embed=embed
         )
