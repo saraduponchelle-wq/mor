@@ -86,15 +86,17 @@ async def embed_anuncio(interaction: discord.Interaction):
 
     embed.set_footer(text="✨ Patrocinado por Mor ✨")
 
-    # Responder primero (obligatorio en slash)
-    await interaction.response.send_message(embed=embed)
-
-    # Enviar el GIF
     gif_path = "data/embed.gif"
-    if os.path.exists(gif_path):
-        await interaction.followup.send(file=discord.File(gif_path))
-    else:
-        await interaction.followup.send("⚠️ No se encontró el GIF del evento.")
 
-    # @everyone
-    await interaction.followup.send("@everyone")
+    # RESPUESTA ÚNICA
+    if os.path.exists(gif_path):
+        await interaction.response.send_message(
+            content="@everyone",
+            embed=embed,
+            file=discord.File(gif_path)
+        )
+    else:
+        await interaction.response.send_message(
+            content="@everyone\n⚠️ No se encontró el GIF del evento.",
+            embed=embed
+        )
