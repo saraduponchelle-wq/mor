@@ -9,7 +9,7 @@ import os
 @app_commands.checks.has_permissions(administrator=True)
 async def embed_anuncio(interaction: discord.Interaction):
 
-    # ⏳ IMPORTANTE: deferir la interacción
+    # ⏳ Evita el error 10062
     await interaction.response.defer()
 
     embed = discord.Embed(
@@ -91,14 +91,9 @@ async def embed_anuncio(interaction: discord.Interaction):
 
     gif_path = "data/embed.gif"
 
-    if os.path.exists(gif_path):
-        await interaction.followup.send(
-            content="@everyone",
-            embed=embed,
-            file=discord.File(gif_path)
-        )
-    else:
-        await interaction.followup.send(
-            content="@everyone\n⚠️ No se encontró el GIF del evento.",
-            embed=embed
-        )
+    # 📌 ORDEN FINAL: EMBED → GIF → @everyone
+    await interaction.followup.send(
+        content="@everyone",
+        embed=embed,
+        file=discord.File(gif_path) if os.path.exists(gif_path) else None
+    )
