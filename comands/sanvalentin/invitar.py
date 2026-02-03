@@ -3,8 +3,8 @@ import random
 import os
 from discord import app_commands
 
-CANAL_YES = 111111111111111111
-CANAL_NO = 222222222222222222
+CANAL_YES = 1468127065168416820
+CANAL_NO = 1468127204465578136
 
 YES_PATH = "evento/yes"
 NO_PATH = "evento/no"

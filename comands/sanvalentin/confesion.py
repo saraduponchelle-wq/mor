@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 
-CANAL_CONFESIONES = 123456789012345678  # cambia esto
+CANAL_CONFESIONES = 1468127025913921627
 
 @app_commands.command(name="confesion", description="Envía una confesión anónima 💌")
 @app_commands.describe(
