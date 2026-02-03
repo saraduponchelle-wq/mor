@@ -84,7 +84,8 @@ from comands.join import join
 from comands.kick import kick
 from comands.salonp.salonp_commands import salonp_group
 from comands.embed import embed_anuncio
-
+from comands.sanvalentin.confesion import confesion
+from comands.sanvalentin.invitar import sanvalentin
 
 
 
@@ -131,7 +132,8 @@ bot.tree.add_command(join)
 bot.tree.add_command(kick)
 bot.tree.add_command(salonp_group)
 bot.tree.add_command(embed_anuncio)
-
+bot.tree.add_command(confesion)
+bot.tree.add_command(sanvalentin)
 
 
 # Registrar
