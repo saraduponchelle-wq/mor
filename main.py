@@ -44,7 +44,7 @@ async def on_ready():
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.playing,
-            name="Usa /sanvalentin para invitar a alguien 💘"
+            name="Feliz San Valentin💘"
         ),
         status=discord.Status.online
     )
