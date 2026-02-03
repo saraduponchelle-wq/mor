@@ -41,7 +41,15 @@ bot.silence_mode = False
 @bot.event
 async def on_ready():
     setup_db()
+    await bot.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.playing,
+            name="Usa /sanvalentin para invitar a alguien 💘"
+        ),
+        status=discord.Status.online
+    )
     print(f"🤖 Bot conectado como {bot.user}")
+
 
 @bot.event
 async def on_member_join(member):
