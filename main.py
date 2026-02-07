@@ -51,7 +51,7 @@ async def on_ready():
     print(f"🤖 Bot conectado como {bot.user}")
 
 
-WELCOME_CHANNEL_ID = 1447704211927335016
+WELCOME_CHANNEL_ID = 1447703622501793842
 
 @bot.event
 async def on_member_join(member: discord.Member):

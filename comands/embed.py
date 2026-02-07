@@ -5,13 +5,16 @@ import os
 @app_commands.command(name="eventoamor", description="Muestra la información del evento de San Valentín")
 async def evento_amor(interaction: discord.Interaction):
 
-    # 1️⃣ Mencionar a everyone
-    await interaction.response.send_message("@everyone")
+    # Respuesta silenciosa para cumplir con Discord
+    await interaction.response.defer()
 
-    # 2️⃣ Enviar el gif
-    await interaction.followup.send(file=discord.File("images/embed.gif"))
+    # 1️⃣ @everyone
+    await interaction.channel.send("@everyone")
 
-    # 3️⃣ Crear embed
+    # 2️⃣ GIF
+    await interaction.channel.send(file=discord.File("images/embed.gif"))
+
+    # 3️⃣ Embed
     embed = discord.Embed(
         title="💞 EVENTO SAN VALENTÍN – TÍTULOS ESPECIALES ✨🏹",
         description=(
