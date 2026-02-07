@@ -81,6 +81,7 @@ async def on_member_join(member: discord.Member):
     await canal.send(file=discord.File("images/welcome.gif"))
 
 
+
 @bot.event
 async def on_member_remove(member):
     # ejemplo (opcional)
