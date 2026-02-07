@@ -183,4 +183,5 @@ bot.tree.add_command(sanvalentin)
 # ───────── RUN ─────────
 
 TOKEN = os.getenv("DISCORD_TOKEN")
+print("TOKEN:", TOKEN)
 bot.run(TOKEN)
