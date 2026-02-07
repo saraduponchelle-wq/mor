@@ -51,10 +51,35 @@ async def on_ready():
     print(f"🤖 Bot conectado como {bot.user}")
 
 
+WELCOME_CHANNEL_ID = 1447704211927335016
+
 @bot.event
-async def on_member_join(member):
-    # ejemplo (opcional)
-    print(f"➕ {member} se unió al servidor")
+async def on_member_join(member: discord.Member):
+    canal = bot.get_channel(WELCOME_CHANNEL_ID)
+
+    if canal is None:
+        return
+
+    embed = discord.Embed(
+        title="💖 Bienvenid@ al reino del amor 💖",
+        description=(
+            f"Hi hi {member.mention}~ 🌸✨\n\n"
+            "Nos alegra muchísimo que formes parte de este pequeño universo lleno de juegos, rol y corazones brillantes 💘\n\n"
+            "Antes de comenzar tu aventura, por favor pasa a leer las reglas aquí:\n"
+            "📜 <#1447704211927335016>\n\n"
+            "Que este San Valentín te regale confesiones dulces, matches mágicos "
+            "y momentos inolvidables 💞🌷"
+        ),
+        color=discord.Color.from_rgb(255, 105, 180)
+    )
+
+    embed.set_footer(text="Con cariño… Mor, la diosa del amor 💘")
+
+    await canal.send(embed=embed)
+
+    # Enviar el gif después
+    await canal.send(file=discord.File("images/welcome.gif"))
+
 
 @bot.event
 async def on_member_remove(member):
@@ -91,7 +116,7 @@ from comands.kiss import beso
 from comands.join import join
 from comands.kick import kick
 from comands.salonp.salonp_commands import salonp_group
-from comands.embed import embed_anuncio
+from comands.embed import evento_amor
 from comands.sanvalentin.confesion import confesion
 from comands.sanvalentin.invitar import sanvalentin
 
@@ -139,7 +164,7 @@ bot.tree.add_command(beso)
 bot.tree.add_command(join)
 bot.tree.add_command(kick)
 bot.tree.add_command(salonp_group)
-bot.tree.add_command(embed_anuncio)
+bot.tree.add_command(evento_amor)
 bot.tree.add_command(confesion)
 bot.tree.add_command(sanvalentin)
 

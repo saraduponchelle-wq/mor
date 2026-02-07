@@ -2,98 +2,72 @@ import discord
 from discord import app_commands
 import os
 
-@app_commands.command(
-    name="embed",
-    description="Publica el anuncio del evento de Minecraft"
-)
-@app_commands.checks.has_permissions(administrator=True)
-async def embed_anuncio(interaction: discord.Interaction):
+@app_commands.command(name="eventoamor", description="Muestra la información del evento de San Valentín")
+async def evento_amor(interaction: discord.Interaction):
 
-    # ⏳ Evita el error 10062
-    await interaction.response.defer()
+    # 1️⃣ Mencionar a everyone
+    await interaction.response.send_message("@everyone")
 
+    # 2️⃣ Enviar el gif
+    await interaction.followup.send(file=discord.File("images/embed.gif"))
+
+    # 3️⃣ Crear embed
     embed = discord.Embed(
-        title="⛏️🏰 EVENTO DE MINECRAFT – CONSTRUCCIÓN EN EQUIPO 🏰⛏️",
+        title="💞 EVENTO SAN VALENTÍN – TÍTULOS ESPECIALES ✨🏹",
         description=(
-            "**¡Tenemos grandes noticias! 🎉**\n"
-            "Recientemente hemos abierto el servidor de Minecraft, y para celebrarlo "
-            "traemos un evento especial donde la creatividad y el trabajo en equipo serán la clave."
+            "*El amor ya está flotando en el aire…*\n"
+            "*¿Estás listo para convertirlo en destino? 🏹💕*\n\n"
+            "Este año podrás conseguir títulos exclusivos cumpliendo ciertos rituales románticos… 🤲💖"
         ),
-        color=discord.Color.dark_green()
+        color=discord.Color.from_rgb(255, 105, 180)
     )
 
     embed.add_field(
-        name="🧱 OBJETIVO DEL EVENTO",
+        name="💌🏹 Título: @💘 Certified by Cupid",
         value=(
-            "El objetivo es **crear la mejor base de Minecraft** antes del **próximo domingo**.\n"
-            "Pueden participar **solos o en grupo**, planear juntos y construir la base que más impresione."
+            "**Para obtenerlo deberás:**\n\n"
+            "💞 Usar `/sanvalentin` y que tu persona especial acepte tu invitación.\n"
+            "💞 Hacer una confesión pública usando `/confesion`.\n"
+            "💞 Tener una cita en un canal de rol y ponerte un match.\n"
+            "💞 Participar en la votación del día 13.\n\n"
+            "**Cuando cumplas TODO:**\n"
+            "✨ Envía la palabra **“Terminado”**\n"
+            "✨ Adjunta las capturas\n"
+            "✨ Mándalo al canal #Redeem\n\n"
+            "Y el destino decidirá… 💫"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="👨‍⚖️ EVALUACIÓN",
+        name="👑💖 Título: @💖 Almas Gemelas",
         value=(
-            "El **domingo**, un **jurado** evaluará cada base teniendo en cuenta:\n"
-            "• Creatividad\n"
-            "• Diseño\n"
-            "• Detalles\n"
-            "• Trabajo en equipo\n\n"
-            "De ahí saldrán los ganadores 🏆"
+            "Solo para quienes brillen más que las estrellas… 💫\n\n"
+            "**Requisitos:**\n"
+            "💞 Ponerte un match con tu persona especial.\n"
+            "💞 Enviar las dos imágenes del match al canal #concurso.\n"
+            "💞 Participar en la votación del día 13.\n"
+            "💞 Ganar el concurso del match más lindo.\n\n"
+            "La pareja elegida será coronada como la más adorable del reino 💗✨"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="🎁 PREMIOS",
+        name="🌸✨ Mensaje de Mor",
         value=(
-            "🥇 **Primer lugar**\n"
-            "• 1 mes de **Discord Nitro** *(solo 1 persona del equipo)*\n"
-            "• Rol de **Primer Lugar**\n\n"
-            "🥈 **Segundo lugar**\n"
-            "• **Marco de la tienda** *(solo 1 persona del equipo)*\n"
-            "• Rol de **Segundo Lugar**\n\n"
-            "🥉 **Tercer lugar**\n"
-            "• Rol de **Tercer Lugar**"
+            "Hi hi, lovely souls~ 🌸✨\n\n"
+            "El amor no es una casualidad…\n"
+            "es una pequeña chispa brillante que decide nacer en el momento perfecto.\n\n"
+            "Cada latido guarda una historia,\n"
+            "cada sonrisa puede convertirse en un recuerdo eterno.\n\n"
+            "Que este San Valentín florezcan confesiones sinceras,\n"
+            "encuentros destinados\n"
+            "y corazones que brillen un poquito más fuerte que ayer 💞🌷\n\n"
+            "Con cariño…\n"
+            "Mor, la diosa del amor 💘"
         ),
         inline=False
     )
 
-    embed.add_field(
-        name="⚠️ IMPORTANTE",
-        value=(
-            "Si el equipo ganador tiene varios integrantes, "
-            "**solo una persona podrá recibir el Nitro o el marco**.\n"
-            "Los **roles** se otorgarán según el puesto obtenido."
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="📅 FECHA LÍMITE",
-        value=(
-            "Tienen hasta el **domingo** para terminar su base.\n"
-            "Ese mismo día se realizará la evaluación y se anunciarán los ganadores."
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="🎮 ACCESO AL SERVIDOR DE MINECRAFT",
-        value=(
-            "Pueden conseguir el **rol de Minecraft** para tener acceso al canal correspondiente "
-            "**yendo al chat de roles**."
-        ),
-        inline=False
-    )
-
-    embed.set_footer(text="✨ Patrocinado por Mor ✨")
-
-    gif_path = "data/embed.gif"
-
-    # 📌 ORDEN FINAL: EMBED → GIF → @everyone
-    await interaction.followup.send(
-        content="@everyone",
-        embed=embed,
-        file=discord.File(gif_path) if os.path.exists(gif_path) else None
-    )
+    await interaction.followup.send(embed=embed)

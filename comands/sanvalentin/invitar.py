@@ -3,8 +3,8 @@ import random
 import os
 from discord import app_commands
 
-CANAL_YES = 1468127065168416820
-CANAL_NO = 1468127204465578136
+CANAL_YES = 1469479880004472903
+CANAL_NO = 1469480040918941810
 
 YES_PATH = "images/yes"
 NO_PATH = "images/no"
