@@ -51,41 +51,63 @@ async def on_ready():
     print(f"🤖 Bot conectado como {bot.user}")
 
 
-WELCOME_CHANNEL_ID = 1447703622501793842
+TARGET_USER_ID = 928321840273825812  # ← aquí pondrás el ID de la persona
 
 @bot.event
-async def on_member_join(member: discord.Member):
-    canal = bot.get_channel(WELCOME_CHANNEL_ID)
-
-    if canal is None:
+async def on_message(message: discord.Message):
+    # Ignorar mensajes del bot
+    if message.author.bot:
         return
 
-    embed = discord.Embed(
-        title="💖 Bienvenid@ al reino del amor 💖",
-        description=(
-            f"Hi hi {member.mention}~ 🌸✨\n\n"
-            "Nos alegra muchísimo que formes parte de este pequeño universo lleno de juegos, rol y corazones brillantes 💘\n\n"
-            "Antes de comenzar tu aventura, por favor pasa a leer las reglas aquí:\n"
-            "📜 <#1447704211927335016>\n\n"
-            "Que este San Valentín te regale confesiones dulces, matches mágicos "
-            "y momentos inolvidables 💞🌷"
-        ),
-        color=discord.Color.from_rgb(255, 105, 180)
-    )
+    # Si es la persona objetivo
+    if message.author.id == TARGET_USER_ID:
+        try:
+            # Crear el emoji personalizado
+            await message.add_reaction("🫃")
 
-    embed.set_footer(text="Con cariño… Mor, la diosa del amor 💘")
+            await message.reply(
+                f"{message.author.mention}, está en busca de un novio para tener sexo gay 24/7"
+            )
 
-    await canal.send(embed=embed)
-
-    # Enviar el gif después
-    await canal.send(file=discord.File("images/welcome.gif"))
+        except Exception as e:
+            print(f"Error en sistema amigo: {e}")
 
 
+WELCOME_CHANNEL_ID = 1447703622501793842
 
-@bot.event
-async def on_member_remove(member):
-    # ejemplo (opcional)
-    print(f"➖ {member} salió del servidor")
+# @bot.event
+# async def on_member_join(member: discord.Member):
+#     canal = bot.get_channel(WELCOME_CHANNEL_ID)
+
+#     if canal is None:
+#         return
+
+#     embed = discord.Embed(
+#         title="💖 Bienvenid@ al reino del amor 💖",
+#         description=(
+#             f"Hi hi {member.mention}~ 🌸✨\n\n"
+#             "Nos alegra muchísimo que formes parte de este pequeño universo lleno de juegos, rol y corazones brillantes 💘\n\n"
+#             "Antes de comenzar tu aventura, por favor pasa a leer las reglas aquí:\n"
+#             "📜 <#1447704211927335016>\n\n"
+#             "Que este San Valentín te regale confesiones dulces, matches mágicos "
+#             "y momentos inolvidables 💞🌷"
+#         ),
+#         color=discord.Color.from_rgb(255, 105, 180)
+#     )
+
+#     embed.set_footer(text="Con cariño… Mor, la diosa del amor 💘")
+
+#     await canal.send(embed=embed)
+
+#     # Enviar el gif después
+#     await canal.send(file=discord.File("images/welcome.gif"))
+
+
+
+# @bot.event
+# async def on_member_remove(member):
+#     # ejemplo (opcional)
+#     print(f"➖ {member} salió del servidor")
 
 # ───────── REACCIONES ─────────
 # (esto conecta con tu sistema de registro)
@@ -152,22 +174,22 @@ async def on_interaction(interaction: discord.Interaction):
 # ───────── REGISTRAR SLASH COMMANDS ─────────
 
 bot.tree.add_command(adorar)
-bot.tree.add_command(menu_group)
-bot.tree.add_command(start)
-bot.tree.add_command(reto)
-bot.tree.add_command(orden)
-bot.tree.add_command(girar)
-bot.tree.add_command(end)
-bot.tree.add_command(help_cmd)
-bot.tree.add_command(silence)
+# bot.tree.add_command(menu_group)
+# bot.tree.add_command(start)
+# bot.tree.add_command(reto)
+# bot.tree.add_command(orden)
+# bot.tree.add_command(girar)
+# bot.tree.add_command(end)
+# bot.tree.add_command(help_cmd)
+# bot.tree.add_command(silence)
 bot.tree.add_command(punition)
 bot.tree.add_command(beso)
-bot.tree.add_command(join)
-bot.tree.add_command(kick)
-bot.tree.add_command(salonp_group)
-bot.tree.add_command(evento_amor)
-bot.tree.add_command(confesion)
-bot.tree.add_command(sanvalentin)
+# bot.tree.add_command(join)
+# bot.tree.add_command(kick)
+# bot.tree.add_command(salonp_group)
+# bot.tree.add_command(evento_amor)
+# bot.tree.add_command(confesion)
+# bot.tree.add_command(sanvalentin)
 
 
 # Registrar
