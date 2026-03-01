@@ -80,7 +80,7 @@ async def on_member_join(member: discord.Member):
     # 🔹 Mensaje principal
     mensaje = (
         f"# {EMOJI_FLOWER} Bienvenido a Irelia Palace {EMOJI_FLOWER}\n"
-        f"{EMOJI_ELY} **Estamos **felices** de tenerte entre nosotros, {member.mention}\n\n"
+        f"{EMOJI_ELY} Estamos **felices** de tenerte entre nosotros, {member.mention}\n\n"
         f"{EMOJI_ELY} **Antes de comenzar, te invitamos a leer nuestras reglas** en {reglas} para que puedas disfrutar de la mejor experiencia en Irelia Palace.\n"
         f"{EMOJI_ELY} **¿Tienes alguna duda?** Consulta nuestro canal de ayuda y, si no encuentras la respuesta, el equipo estará encantado de asistirte en {soporte}\n"
         f"{EMOJI_ELY} **Pasa a saludarnos en {general},** nos encanta dar la bienvenida a nuestros nuevos miembros.\n"
