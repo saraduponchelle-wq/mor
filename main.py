@@ -5,6 +5,11 @@ from events.reaction_remove import handle_reaction_remove
 from database.db import setup_db
 import os
 
+EMOJI_ELY = str(os.getenv("ELY"))
+EMOJI_FLOWER = str(os.getenv("FLOWER"))
+EMOJI_SEPARATOR = str(os.getenv("SEPARATOR"))
+EMOJI_CIRCLE = str(os.getenv("CIRCLE"))
+
 
 # ───────── CONFIG ─────────
 
@@ -51,57 +56,54 @@ async def on_ready():
     print(f"🤖 Bot conectado como {bot.user}")
 
 
-TARGET_USER_ID = 928321840273825812  # ← aquí pondrás el ID de la persona
 
-# @bot.event
-# async def on_message(message: discord.Message):
-#     # Ignorar mensajes del bot
-#     if message.author.bot:
-#         return
-
-#     # Si es la persona objetivo
-#     if message.author.id == TARGET_USER_ID:
-#         try:
-#             # Crear el emoji personalizado
-#             await message.add_reaction("🫃")
-
-#             await message.reply(
-#                 f"{message.author.mention}, está en busca de un novio para tener sexo gay 24/7"
-#             )
-
-#         except Exception as e:
-#             print(f"Error en sistema amigo: {e}")
+BIENVENIDA_CHANNEL_ID = 1447703622501793842
+REGLAS_CHANNEL_ID = 1447704211927335016
+ROLES_CHANNEL_ID = 1449194573493702726
+GENERAL_CHANNEL_ID = 1447695182693798042
+SOPORTE_CHANNEL_ID = 1447695182693798042
 
 
-WELCOME_CHANNEL_ID = 1447703622501793842
+@bot.event
+async def on_member_join(member: discord.Member):
 
-# @bot.event
-# async def on_member_join(member: discord.Member):
-#     canal = bot.get_channel(WELCOME_CHANNEL_ID)
+    channel = member.guild.get_channel(BIENVENIDA_CHANNEL_ID)
+    if channel is None:
+        return
 
-#     if canal is None:
-#         return
+    # 🔹 Obtener menciones reales de canales
+    reglas = f"<#{REGLAS_CHANNEL_ID}>"
+    roles = f"<#{ROLES_CHANNEL_ID}>"
+    general = f"<#{GENERAL_CHANNEL_ID}>"
+    soporte = f"<#{SOPORTE_CHANNEL_ID}>"
 
-#     embed = discord.Embed(
-#         title="💖 Bienvenid@ al reino del amor 💖",
-#         description=(
-#             f"Hi hi {member.mention}~ 🌸✨\n\n"
-#             "Nos alegra muchísimo que formes parte de este pequeño universo lleno de juegos, rol y corazones brillantes 💘\n\n"
-#             "Antes de comenzar tu aventura, por favor pasa a leer las reglas aquí:\n"
-#             "📜 <#1447704211927335016>\n\n"
-#             "Que este San Valentín te regale confesiones dulces, matches mágicos "
-#             "y momentos inolvidables 💞🌷"
-#         ),
-#         color=discord.Color.from_rgb(255, 105, 180)
-#     )
+    # 🔹 Mensaje principal
+    mensaje = (
+        f"# {EMOJI_FLOWER} Bienvenido a Irelia Palace {EMOJI_FLOWER}\n"
+        f"{EMOJI_ELY} **Estamos **felices** de tenerte entre nosotros, {member.mention}\n\n"
+        f"{EMOJI_ELY} **Antes de comenzar, te invitamos a leer nuestras reglas** en {reglas} para que puedas disfrutar de la mejor experiencia en Irelia Palace.\n"
+        f"{EMOJI_ELY} **¿Tienes alguna duda?** Consulta nuestro canal de ayuda y, si no encuentras la respuesta, el equipo estará encantado de asistirte en {soporte}\n"
+        f"{EMOJI_ELY} **Pasa a saludarnos en {general},** nos encanta dar la bienvenida a nuestros nuevos miembros.\n"
+        f"{EMOJI_ELY} **Si deseas personalizar tu experiencia,** no olvides obtener tus roles en {roles} y formar parte de nuestra comunidad."
+    )
 
-#     embed.set_footer(text="Con cariño… Mor, la diosa del amor 💘")
+    # 🔹 Crear embed
+    embed = discord.Embed(
+        title=f"# {EMOJI_SEPARATOR} • Una nueva historia comienza! ",
+        description=(
+            "Que la diosa **Mor** te bendiga y haga de tu viaje dentro de "
+            "**Irelia Palace** un sueño inolvidable."
+        ),
+        color=discord.Color.pink()
+    )
 
-#     await canal.send(embed=embed)
+    # 🔹 Icono del usuario arriba a la derecha
+    embed.set_thumbnail(url=member.display_avatar.url)
 
-#     # Enviar el gif después
-#     await canal.send(file=discord.File("images/welcome.gif"))
+    # 🔹 Footer opcional elegante
+    embed.set_footer(text="Bienvenido a Irelia Palace")
 
+    await channel.send(mensaje, embed=embed)
 
 
 # @bot.event
@@ -126,22 +128,22 @@ async def on_reaction_remove(reaction, user):
 # aquí conectas tus archivos externos
 
 # Admin
-from comands.start import start
-from comands.end import end
-from comands.adorar import adorar
-from comands.girar import girar
-from comands.help import help_cmd
-from comands.orden import orden
-from comands.reto import reto
-from comands.silence import silence
-from comands.punition import punition
-from comands.kiss import beso
-from comands.join import join
-from comands.kick import kick
-from comands.salonp.salonp_commands import salonp_group
-from comands.embed import evento_amor
-from comands.sanvalentin.confesion import confesion
-from comands.sanvalentin.invitar import sanvalentin
+# from comands.start import start
+# from comands.end import end
+# from comands.adorar import adorar
+# from comands.girar import girar
+# from comands.help import help_cmd
+# from comands.orden import orden
+# from comands.reto import reto
+# from comands.silence import silence
+# from comands.punition import punition
+# from comands.kiss import beso
+# from comands.join import join
+# from comands.kick import kick
+# from comands.salonp.salonp_commands import salonp_group
+# from comands.embed import evento_amor
+# from comands.sanvalentin.confesion import confesion
+# from comands.sanvalentin.invitar import sanvalentin
 
 
 
@@ -173,7 +175,7 @@ async def on_interaction(interaction: discord.Interaction):
 
 # ───────── REGISTRAR SLASH COMMANDS ─────────
 
-bot.tree.add_command(adorar)
+# bot.tree.add_command(adorar)
 # bot.tree.add_command(menu_group)
 # bot.tree.add_command(start)
 # bot.tree.add_command(reto)
@@ -182,8 +184,8 @@ bot.tree.add_command(adorar)
 # bot.tree.add_command(end)
 # bot.tree.add_command(help_cmd)
 # bot.tree.add_command(silence)
-bot.tree.add_command(punition)
-bot.tree.add_command(beso)
+# bot.tree.add_command(punition)
+# bot.tree.add_command(beso)
 # bot.tree.add_command(join)
 # bot.tree.add_command(kick)
 # bot.tree.add_command(salonp_group)
