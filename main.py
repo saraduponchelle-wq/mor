@@ -53,24 +53,24 @@ async def on_ready():
 
 TARGET_USER_ID = 928321840273825812  # ← aquí pondrás el ID de la persona
 
-@bot.event
-async def on_message(message: discord.Message):
-    # Ignorar mensajes del bot
-    if message.author.bot:
-        return
+# @bot.event
+# async def on_message(message: discord.Message):
+#     # Ignorar mensajes del bot
+#     if message.author.bot:
+#         return
 
-    # Si es la persona objetivo
-    if message.author.id == TARGET_USER_ID:
-        try:
-            # Crear el emoji personalizado
-            await message.add_reaction("🫃")
+#     # Si es la persona objetivo
+#     if message.author.id == TARGET_USER_ID:
+#         try:
+#             # Crear el emoji personalizado
+#             await message.add_reaction("🫃")
 
-            await message.reply(
-                f"{message.author.mention}, está en busca de un novio para tener sexo gay 24/7"
-            )
+#             await message.reply(
+#                 f"{message.author.mention}, está en busca de un novio para tener sexo gay 24/7"
+#             )
 
-        except Exception as e:
-            print(f"Error en sistema amigo: {e}")
+#         except Exception as e:
+#             print(f"Error en sistema amigo: {e}")
 
 
 WELCOME_CHANNEL_ID = 1447703622501793842
