@@ -89,7 +89,7 @@ async def on_member_join(member: discord.Member):
 
     # 🔹 Crear embed
     embed = discord.Embed(
-        title=f"# {EMOJI_SEPARATOR} • Una nueva historia comienza! ",
+        title=f"**{EMOJI_SEPARATOR} • Una nueva historia comienza!**",
         description=(
             "Que la diosa **Mor** te bendiga y haga de tu viaje dentro de "
             "**Irelia Palace** un sueño inolvidable."
