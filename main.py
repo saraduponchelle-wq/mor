@@ -1,5 +1,5 @@
 import discord
-from discord import app_commands
+from discord import Emoji, app_commands
 from events.reaction_add import handle_reaction_add
 from events.reaction_remove import handle_reaction_remove
 from database.db import setup_db
@@ -55,7 +55,37 @@ async def on_ready():
     )
     print(f"🤖 Bot conectado como {bot.user}")
 
+# ───────── DESPEDIDA ─────────
 
+DESPEDIDAS_CHANNEL_ID = 1459024989360492645  # <-- pon aquí el ID de tu canal de despedidas
+
+
+@bot.event
+async def on_member_remove(member: discord.Member):
+
+    channel = member.guild.get_channel(DESPEDIDAS_CHANNEL_ID)
+    if channel is None:
+        return
+
+    embed = discord.Embed(
+        title=f"**{EMOJI_FLOWER} Una despedida en Irelia Palace {EMOJI_FLOWER}**",
+        description=(
+            f"{member.mention}\n\n"
+            f"{EMOJI_ELY} **Gracias** por haber formado parte de **Irelia Palace**.\n"
+            f"{EMOJI_ELY}Que la diosa **Mor** ilumine tu camino, dondequiera que continúe tu historia. ✨"
+        ),
+        color=discord.Color.from_rgb(255, 182, 193)  # rosa suave elegante
+    )
+
+    # Avatar del usuario arriba a la derecha
+    embed.set_thumbnail(url=member.display_avatar.url)
+
+    # Footer elegante
+    embed.set_footer(text="Irelia Palace • Que Mor te acompañe")
+
+    await channel.send(embed=embed)
+
+# ───────── BIENVENIDA ─────────
 
 BIENVENIDA_CHANNEL_ID = 1447703622501793842
 REGLAS_CHANNEL_ID = 1447704211927335016
