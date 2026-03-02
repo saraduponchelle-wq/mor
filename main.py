@@ -432,6 +432,19 @@ async def on_reaction_add(reaction, user):
 async def on_reaction_remove(reaction, user):
     await handle_reaction_remove(bot, reaction, user)
 
+@bot.event
+async def on_invite_create(invite):
+    # invite.inviter -> el usuario que creó la invitación
+    # invite.guild -> el servidor donde se creó
+    # invite.delete() -> elimina la invitación
+
+    if invite.inviter.id != bot.user.id:
+        try:
+            await invite.delete()
+            print(f"Se eliminó un enlace de invitación creado por {invite.inviter}")
+        except Exception as e:
+            print(f"[ERROR] No se pudo eliminar invitación: {e}")
+
 
 # ───────── RUN ─────────
 
