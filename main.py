@@ -356,6 +356,9 @@ async def on_raw_reaction_add(payload):
         return
 
     guild = bot.get_guild(payload.guild_id)
+    if guild is None:
+        return
+
     channel = guild.get_channel(payload.channel_id)
     message = await channel.fetch_message(payload.message_id)
 
@@ -364,31 +367,40 @@ async def on_raw_reaction_add(payload):
 
     embed = message.embeds[0]
 
-    solicitante_field = embed.fields[0].value
-    solicitante_id = int(solicitante_field.replace("<@", "").replace(">", "").replace("!", ""))
+    try:
+        solicitante_field = embed.fields[0].value
+        solicitante_id = int(solicitante_field.replace("<@", "").replace(">", "").replace("!", ""))
+    except:
+        return
 
     miembro = guild.get_member(solicitante_id)
-
     if miembro is None:
         return
 
-    invite_channel = guild.get_channel(INVITE_CHANNEL_ID)
+    # 🔥 Crear invitación en un canal válido automáticamente
+    invite_channel = guild.system_channel or guild.text_channels[0]
 
-    invite = await invite_channel.create_invite(
-        max_uses=1,
-        unique=True,
-        reason="Invitación aprobada por el staff"
-    )
+    try:
+        invite = await invite_channel.create_invite(
+            max_uses=1,
+            unique=True,
+            reason="Invitación aprobada por el staff"
+        )
+    except Exception as e:
+        await channel.send(f"Error creando invitación: {e}")
+        return
 
+    # 🔥 Enviar por privado al usuario
     try:
         await miembro.send(
             f"✨ Tu solicitud fue aprobada ✨\n\n"
-            f"Aquí tienes tu invitación:\n{invite.url}"
+            f"Aquí tienes tu invitación privada:\n{invite.url}"
         )
     except:
         await channel.send(f"No pude enviar DM a {miembro.mention}")
+        return
 
-    await channel.send(f"✅ Invitación enviada a {miembro.mention}")
+    await channel.send(f"✅ Invitación enviada correctamente a {miembro.mention}")
 
 # ───────── REACCIONES EXISTENTES ─────────
 @bot.event
