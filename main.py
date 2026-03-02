@@ -272,6 +272,61 @@ TICKET_MESSAGE_ID = 444444444444444444       # ID del mensaje embed creado
 FORM_EMOJI = "📝"
 APPROVE_EMOJI = "✅"
 
+# ───────── MODAL ─────────
+class InvitacionModal(discord.ui.Modal, title="Solicitud de Invitación"):
+
+    motivo = discord.ui.TextInput(
+        label="Motivo de la invitación",
+        style=discord.TextStyle.paragraph,
+        required=True,
+        max_length=500
+    )
+
+    usuario = discord.ui.TextInput(
+        label="¿Para quién es la invitación?",
+        required=True,
+        max_length=100
+    )
+
+    async def on_submit(self, interaction: discord.Interaction):
+
+        staff_channel = interaction.guild.get_channel(STAFF_CHANNEL_ID)
+
+        embed = discord.Embed(
+            title="📩 Nueva solicitud de invitación",
+            color=discord.Color.purple()
+        )
+
+        embed.add_field(name="Solicitante", value=interaction.user.mention, inline=False)
+        embed.add_field(name="Motivo", value=self.motivo.value, inline=False)
+        embed.add_field(name="Invitación para", value=self.usuario.value, inline=False)
+
+        embed.set_thumbnail(url=interaction.user.display_avatar.url)
+        embed.timestamp = discord.utils.utcnow()
+
+        msg = await staff_channel.send(embed=embed)
+        await msg.add_reaction(APPROVE_EMOJI)
+
+        await interaction.response.send_message(
+            "Tu solicitud fue enviada al staff 💜",
+            ephemeral=True
+        )
+
+# ───────── BOTÓN ─────────
+class TicketView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="Solicitar Invitación",
+        emoji=FORM_EMOJI,
+        style=discord.ButtonStyle.primary,
+        custom_id="solicitar_invitacion_button"
+    )
+    async def solicitar(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(InvitacionModal())
+
+# ───────── COMANDO PARA CREAR EMBED ─────────
 @bot.tree.command(name="setembed", description="Crea el embed de solicitudes")
 async def setembed(interaction: discord.Interaction):
 
@@ -286,11 +341,63 @@ async def setembed(interaction: discord.Interaction):
     embed.set_footer(text="Irelia Palace • Sistema oficial de invitaciones")
 
     view = TicketView()
-
-    msg = await channel.send(embed=embed, view=view)
+    await channel.send(embed=embed, view=view)
 
     await interaction.response.send_message("Embed creado correctamente.", ephemeral=True)
 
+# ───────── APROBACIÓN AUTOMÁTICA ─────────
+@bot.event
+async def on_raw_reaction_add(payload):
+
+    if payload.channel_id != STAFF_CHANNEL_ID:
+        return
+
+    if str(payload.emoji) != APPROVE_EMOJI:
+        return
+
+    guild = bot.get_guild(payload.guild_id)
+    channel = guild.get_channel(payload.channel_id)
+    message = await channel.fetch_message(payload.message_id)
+
+    if not message.embeds:
+        return
+
+    embed = message.embeds[0]
+
+    solicitante_field = embed.fields[0].value
+    solicitante_id = int(solicitante_field.replace("<@", "").replace(">", "").replace("!", ""))
+
+    miembro = guild.get_member(solicitante_id)
+
+    if miembro is None:
+        return
+
+    invite_channel = guild.get_channel(INVITE_CHANNEL_ID)
+
+    invite = await invite_channel.create_invite(
+        max_uses=1,
+        unique=True,
+        reason="Invitación aprobada por el staff"
+    )
+
+    try:
+        await miembro.send(
+            f"✨ Tu solicitud fue aprobada ✨\n\n"
+            f"Aquí tienes tu invitación:\n{invite.url}"
+        )
+    except:
+        await channel.send(f"No pude enviar DM a {miembro.mention}")
+
+    await channel.send(f"✅ Invitación enviada a {miembro.mention}")
+
+# ───────── REACCIONES EXISTENTES ─────────
+@bot.event
+async def on_reaction_add(reaction, user):
+    await handle_reaction_add(bot, reaction, user)
+
+@bot.event
+async def on_reaction_remove(reaction, user):
+    await handle_reaction_remove(bot, reaction, user)
 
 
 # ───────── RUN ─────────
