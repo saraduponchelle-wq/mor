@@ -265,9 +265,31 @@ async def on_interaction(interaction: discord.Interaction):
 
 # registrar comandos
 
+SOLICITUDES_CHANNEL_ID = 1478120920781557902  # canal donde va el embed
+STAFF_CHANNEL_ID = 1478121103330246656        # canal donde llegan solicitudes
+INVITE_CHANNEL_ID = 333333333333333333       # canal donde se crea la invitación
+TICKET_MESSAGE_ID = 444444444444444444       # ID del mensaje embed creado
+FORM_EMOJI = "📝"
+APPROVE_EMOJI = "✅"
 
+@bot.tree.command(name="setembed", description="Crea el embed de solicitudes")
+async def setembed(interaction: discord.Interaction):
 
+    channel = interaction.guild.get_channel(SOLICITUDES_CHANNEL_ID)
 
+    embed = discord.Embed(
+        title="📜 Solicitudes de Invitación",
+        description="Pulsa el botón para completar el formulario y solicitar permiso.",
+        color=discord.Color.purple()
+    )
+
+    embed.set_footer(text="Irelia Palace • Sistema oficial de invitaciones")
+
+    view = TicketView()
+
+    msg = await channel.send(embed=embed, view=view)
+
+    await interaction.response.send_message("Embed creado correctamente.", ephemeral=True)
 
 
 
