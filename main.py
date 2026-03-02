@@ -346,61 +346,82 @@ async def setembed(interaction: discord.Interaction):
     await interaction.response.send_message("Embed creado correctamente.", ephemeral=True)
 
 # ───────── APROBACIÓN AUTOMÁTICA ─────────
-@bot.event
-async def on_raw_reaction_add(payload):
+    @bot.event
+    async def on_raw_reaction_add(payload):
 
-    if payload.channel_id != STAFF_CHANNEL_ID:
-        return
+        # ❌ Ignorar reacciones del propio bot
+        if payload.user_id == bot.user.id:
+            return
 
-    if str(payload.emoji) != APPROVE_EMOJI:
-        return
+        # ❌ Solo detectar en canal staff
+        if payload.channel_id != STAFF_CHANNEL_ID:
+            return
 
-    guild = bot.get_guild(payload.guild_id)
-    if guild is None:
-        return
+        # ❌ Solo detectar emoji correcto
+        if str(payload.emoji) != APPROVE_EMOJI:
+            return
 
-    channel = guild.get_channel(payload.channel_id)
-    message = await channel.fetch_message(payload.message_id)
+        guild = bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
 
-    if not message.embeds:
-        return
+        channel = guild.get_channel(payload.channel_id)
+        if channel is None:
+            return
 
-    embed = message.embeds[0]
+        message = await channel.fetch_message(payload.message_id)
 
-    try:
-        solicitante_field = embed.fields[0].value
-        solicitante_id = int(solicitante_field.replace("<@", "").replace(">", "").replace("!", ""))
-    except:
-        return
+        # ❌ Si ya fue aprobado antes, no hacer nada
+        if message.content == "APROBADO":
+            return
 
-    miembro = guild.get_member(solicitante_id)
-    if miembro is None:
-        return
+        if not message.embeds:
+            return
 
-    # 🔥 Crear invitación en un canal válido automáticamente
-    invite_channel = guild.system_channel or guild.text_channels[0]
+        embed = message.embeds[0]
 
-    try:
+        try:
+            solicitante_field = embed.fields[0].value
+            solicitante_id = int(
+                solicitante_field.replace("<@", "")
+                .replace(">", "")
+                .replace("!", "")
+            )
+        except:
+            return
+
+        miembro = guild.get_member(solicitante_id)
+        if miembro is None:
+            return
+
+        # 🔥 Crear invitación
+        invite_channel = guild.system_channel or guild.text_channels[0]
+
         invite = await invite_channel.create_invite(
             max_uses=1,
             unique=True,
             reason="Invitación aprobada por el staff"
         )
-    except Exception as e:
-        await channel.send(f"Error creando invitación: {e}")
-        return
 
-    # 🔥 Enviar por privado al usuario
-    try:
-        await miembro.send(
-            f"✨ Tu solicitud fue aprobada ✨\n\n"
-            f"Aquí tienes tu invitación privada:\n{invite.url}"
-        )
-    except:
-        await channel.send(f"No pude enviar DM a {miembro.mention}")
-        return
+        # 🔥 Enviar por DM
+        try:
+            await miembro.send(
+                f"✨ Tu solicitud fue aprobada ✨\n\n"
+                f"Aquí tienes tu invitación privada:\n{invite.url}"
+            )
+        except:
+            await channel.send(f"No pude enviar DM a {miembro.mention}")
+            return
 
-    await channel.send(f"✅ Invitación enviada correctamente a {miembro.mention}")
+        # 🔥 Eliminar la reacción del staff
+        member_who_reacted = guild.get_member(payload.user_id)
+        if member_who_reacted:
+            await message.remove_reaction(APPROVE_EMOJI, member_who_reacted)
+
+        # 🔥 Marcar como aprobado para que no vuelva a ejecutarse
+        await message.edit(content="APROBADO")
+
+        await channel.send(f"✅ Invitación enviada correctamente a {miembro.mention}")
 
 # ───────── REACCIONES EXISTENTES ─────────
 @bot.event
