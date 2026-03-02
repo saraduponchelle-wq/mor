@@ -333,8 +333,8 @@ async def setembed(interaction: discord.Interaction):
     channel = interaction.guild.get_channel(SOLICITUDES_CHANNEL_ID)
 
     embed = discord.Embed(
-        title="📜 Solicitudes de Invitación",
-        description="Pulsa el botón para completar el formulario y solicitar permiso.",
+        title=f"# {EMOJI_SEPARATOR} Solicitudes de Invitación",
+        description=f"{EMOJI_STAR}Pulsa el botón para completar el formulario y solicitar permiso.",
         color=discord.Color.purple()
     )
 
