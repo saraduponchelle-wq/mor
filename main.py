@@ -9,6 +9,8 @@ EMOJI_ELY = str(os.getenv("ELY"))
 EMOJI_FLOWER = str(os.getenv("FLOWER"))
 EMOJI_SEPARATOR = str(os.getenv("SEPARATOR"))
 EMOJI_CIRCLE = str(os.getenv("CIRCLE"))
+EMOJI_HEART = str(os.getenv("HEART"))
+EMOJI_STAR = str(os.getenv("STAR"))
 
 
 # ───────── CONFIG ─────────
@@ -54,6 +56,41 @@ async def on_ready():
         status=discord.Status.online
     )
     print(f"🤖 Bot conectado como {bot.user}")
+
+# 🔹 boosters   
+
+BOOST_CHANNEL_ID = 123456789012345678  # <-- ID del canal donde se enviará el mensaje
+
+
+@bot.event
+async def on_member_update(before: discord.Member, after: discord.Member):
+
+    # Detecta cuando alguien empieza a boostear
+    if before.premium_since is None and after.premium_since is not None:
+
+        channel = after.guild.get_channel(BOOST_CHANNEL_ID)
+        if channel is None:
+            return
+
+        embed = discord.Embed(
+            title=f"{EMOJI_FLOWER} Un nuevo impulso para Irelia Palace {EMOJI_FLOWER}",
+            description=(
+                f"(づ๑•ᴗ•๑)づ {after.mention} ¡Muchas gracias por el boost! {EMOJI_HEART}\n\n"
+                f"# {EMOJI_HEART} Tus beneficios:\n"
+                f"   {EMOJI_ELY} Un rol totalmente personalizado\n"
+                f"   {EMOJI_ELY} Ganar 1000 de dinero diario usando collect income.\n"
+                f"   {EMOJI_ELY} Mención de @everyone cuando busques rol."
+            ),
+            color=discord.Color.from_rgb(186, 85, 211)  # morado elegante
+        )
+
+        # Avatar del usuario arriba a la derecha
+        embed.set_thumbnail(url=after.display_avatar.url)
+
+        embed.set_footer(text="Irelia Palace • La diosa Mor bendice tu apoyo ✨")
+        embed.timestamp = discord.utils.utcnow()
+
+        await channel.send(embed=embed)
 
 # ───────── DESPEDIDA ─────────
 
