@@ -63,7 +63,9 @@ async def handle_invite_detection(bot, message: discord.Message):
             await log_canal.send(
                 f"🚨 **Usuario baneado por spam de invitaciones**\n"
                 f"👤 {usuario} ({usuario.id})\n"
-                f"🔗 Link enviado: {invite_link}"
+                f"🔗 Link enviado: {invite_link}\n\n"
+                "@everyone",
+                allowed_mentions=discord.AllowedMentions(everyone=True)
             )
 
         return
@@ -85,7 +87,9 @@ async def handle_invite_detection(bot, message: discord.Message):
         await log_canal.send(
             f"⚠️ **Intento de invitación detectado**\n"
             f"👤 Usuario: {usuario} ({usuario.id})\n"
-            f"🔗 Link enviado: {invite_link}"
+            f"🔗 Link enviado: {invite_link}\n\n"
+            "@everyone",
+            allowed_mentions=discord.AllowedMentions(everyone=True)
         )
 
     await silenciar_temporal(canal, usuario, 300)
