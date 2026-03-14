@@ -172,15 +172,16 @@ async def on_member_join(member: discord.Member):
 
     await channel.send(mensaje, embed=embed)
 
+#----------------- HACK ------------------------
 
-# @bot.event
-# async def on_member_remove(member):
-#     # ejemplo (opcional)
-#     print(f"➖ {member} salió del servidor")
+from events.detect import handle_invite_detection
 
-# ───────── REACCIONES ─────────
-# (esto conecta con tu sistema de registro)
+@bot.event
+async def on_message(message):
+    await handle_invite_detection(bot, message)
 
+
+#----------------- REACCIONES ------------------------
 
 @bot.event
 async def on_reaction_add(reaction, user):
