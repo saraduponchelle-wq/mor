@@ -5,6 +5,7 @@ from events.reaction_remove import handle_reaction_remove
 from database.db import setup_db
 import os
 
+
 EMOJI_ELY = str(os.getenv("ELY"))
 EMOJI_FLOWER = str(os.getenv("FLOWER"))
 EMOJI_SEPARATOR = str(os.getenv("SEPARATOR"))
