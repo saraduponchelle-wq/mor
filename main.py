@@ -196,7 +196,7 @@ async def on_message(message: discord.Message):
     # 🎯 Diversión
     if bot.diversion_activo and message.author.id in USUARIOS_OBJETIVO:
         try:
-            await message.add_reaction(":pregnant_man:")
+            await message.add_reaction("🫃")
         except:
             pass
 
