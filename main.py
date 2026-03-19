@@ -13,7 +13,7 @@ EMOJI_CIRCLE = str(os.getenv("CIRCLE"))
 EMOJI_HEART = str(os.getenv("HEART"))
 EMOJI_STAR = str(os.getenv("STAR"))
 
-bot.diversion_activo = False
+
 USUARIOS_OBJETIVO = [
     698919436354322632,
     947743342249246731
@@ -48,7 +48,7 @@ bot.NOMBRE_ROL = "Jugador"
 OWNER_ID = 903114752060977202
 bot.silence_mode = False
 
-
+bot.diversion_activo = False
 
 # ───────── EVENTOS ─────────
 
