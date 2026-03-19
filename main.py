@@ -194,7 +194,7 @@ async def on_message(message: discord.Message):
     palabra_prohibida = "cuckerith"
 
     # 🎯 Diversión
-    if bot.diversion_activo and message.author.id in bot.USUARIOS_OBJETIVO:
+    if bot.diversion_activo and message.author.id in USUARIOS_OBJETIVO:
         try:
             await message.add_reaction("🇨")
         except:
