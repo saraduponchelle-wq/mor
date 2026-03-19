@@ -191,12 +191,12 @@ async def on_message(message: discord.Message):
     # 🔹 detectar invites
     await handle_invite_detection(bot, message)
 
-    palabra_prohibida = "cuckerith"
+    palabra_prohibida = "cuck"
 
     # 🎯 Diversión
     if bot.diversion_activo and message.author.id in USUARIOS_OBJETIVO:
         try:
-            await message.add_reaction("🇨")
+            await message.add_reaction(":pregnant_man:")
         except:
             pass
 
