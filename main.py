@@ -13,6 +13,12 @@ EMOJI_CIRCLE = str(os.getenv("CIRCLE"))
 EMOJI_HEART = str(os.getenv("HEART"))
 EMOJI_STAR = str(os.getenv("STAR"))
 
+bot.diversion_activo = False
+USUARIOS_OBJETIVO = [
+    698919436354322632,
+    947743342249246731
+]
+
 
 # ───────── CONFIG ─────────
 
@@ -178,8 +184,33 @@ async def on_member_join(member: discord.Member):
 from events.detect import handle_invite_detection
 
 @bot.event
-async def on_message(message):
+async def on_message(message: discord.Message):
+    if message.author.bot:
+        return
+
+    # 🔹 detectar invites
     await handle_invite_detection(bot, message)
+
+    palabra_prohibida = "cuckerith"
+
+    # 🎯 Diversión
+    if bot.diversion_activo and message.author.id in bot.USUARIOS_OBJETIVO:
+        try:
+            await message.add_reaction("🇨")
+        except:
+            pass
+
+    # 🚫 palabra prohibida
+    if palabra_prohibida in message.content.lower():
+        await message.delete()
+
+        await message.channel.send(
+            f"{message.author.mention} esa palabra no está permitida.\n"
+            "No ofendas a la diosa Aertith. ✨"
+        )
+        return
+
+    await bot.process_commands(message)
 
 
 #----------------- REACCIONES ------------------------
@@ -243,6 +274,9 @@ async def on_interaction(interaction: discord.Interaction):
 # from menus.bar import mostrar_menu_bar
 
 # ───────── REGISTRAR SLASH COMMANDS ─────────
+from comands.diversion import diversion
+
+bot.tree.add_command(diversion)
 
 # bot.tree.add_command(adorar)
 # bot.tree.add_command(menu_group)
