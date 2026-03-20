@@ -201,14 +201,6 @@ async def on_message(message: discord.Message):
             pass
 
     # 🚫 palabra prohibida
-    if palabra_prohibida in message.content.lower():
-        await message.delete()
-
-        await message.channel.send(
-            f"{message.author.mention} esa palabra no está permitida.\n"
-            "No ofendas a la diosa Aertith. ✨"
-        )
-        return
 
     await bot.process_commands(message)
 
